@@ -1,0 +1,5 @@
+#search:hover {
+  transition: none !important; /* 트랜지션 제거 */
+  color: #c5c5c5 !important;
+  background-color: #f5f5f5 !important;
+}
