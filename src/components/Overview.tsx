@@ -1,13 +1,25 @@
 import { Button, Card, Input, Modal, Select, Statistic } from "antd";
-import { useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useSearchParams } from "react-router-dom";
 import api from "../api";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-const options = ["string", "integer"];
+import { Topic } from "../schema/topic";
+import { PutTopicParams } from "../api/topic";
+import Description from "./Description";
+
+const options = [
+  { value: "string", label: "string" },
+  { value: "integer", label: "integer" },
+  { value: "long", label: "long" },
+  { value: "float", label: "float" },
+  { value: "double", label: "double" },
+];
 
 export default function Overview() {
+  const queryClient = useQueryClient();
   const [searchParams] = useSearchParams();
+  const workspaceId = searchParams.get("workspace") ?? "";
 
   const { data } = useQuery({
     queryKey: ["dashboard"],
@@ -16,12 +28,77 @@ export default function Overview() {
 
   const [open, setOpen] = useState(false);
 
-  const target = data?.data.find(
-    datum => datum.id.toString() === searchParams.get("workspace")
-  );
-  // const ws = new WebSocket("ws://14.55.157.117:8080/ws");
+  const target = data?.data.find(datum => datum.id.toString() === workspaceId);
+  const [params, setParams] = useState<Topic | undefined>(target);
 
-  // console.log(ws);
+  useEffect(() => {
+    // WebSocket 연결 설정
+    const socket = new WebSocket("ws://14.55.157.117:8080/ws");
+
+    // WebSocket 연결이 열릴 때
+    socket.onopen = () => {
+      console.log("WebSocket connected");
+      // setWs(socket);
+    };
+
+    // WebSocket 메시지를 받을 때
+    socket.onmessage = event => {
+      const message = event.data;
+      // setMessages((prevMessages) => [...prevMessages, message]);
+      console.log(message);
+    };
+
+    // WebSocket 연결이 닫힐 때
+    socket.onclose = () => {
+      console.log("WebSocket disconnected");
+    };
+
+    // WebSocket 오류 발생 시
+    socket.onerror = error => {
+      console.error("WebSocket error:", error);
+    };
+
+    // 컴포넌트 언마운트 시 WebSocket 연결 닫기
+    return () => {
+      socket.close();
+    };
+  }, []);
+
+  const { mutate: editTopic, isLoading } = useMutation({
+    mutationFn: api.topic.editTopic,
+    onSuccess: () => {
+      queryClient.invalidateQueries(["dashboard"]);
+    },
+  });
+
+  const onSubmit = () => {
+    if (!params) return;
+
+    editTopic(params as PutTopicParams);
+    setOpen(false);
+  };
+
+  const onChange = (v: string, key: string) => {
+    switch (key) {
+      case "topicName":
+        setParams(prev => {
+          return { ...prev, topicName: v } as Topic;
+        });
+        break;
+      case "topicDescription":
+        setParams(prev => {
+          return { ...prev, topicDescription: v } as Topic;
+        });
+        break;
+      case "fields":
+        setParams(prev => {
+          return { ...prev, fields: v } as Topic;
+        });
+        break;
+      default:
+        break;
+    }
+  };
 
   return (
     <div className="flex gap-2">
@@ -67,33 +144,78 @@ export default function Overview() {
           </Button>
         </div>
 
-        <div>이름: {target?.topicName}</div>
+        <Description
+          value={target?.topicName}
+          label="토픽명"
+          tooltip={{ text: "대충 토픽이 뭔지에 대한 설명" }}
+        />
+        <Description
+          value={
+            target?.topicDescription.length === 0
+              ? "토픽 설명이 없습니다."
+              : target?.topicDescription
+          }
+          label="토픽설명"
+          tooltip={{ text: "이 토픽에 대해 사용자가 작성한 설명입니다." }}
+        />
+
         <div>
-          설명 :
-          {target?.topicDescription.length === 0
-            ? "토픽 설명이 없습니다."
-            : target?.topicDescription}
+          <Description
+            label="데이터 필드"
+            tooltip={{ text: "대충 데이터 필드에 대한 설명" }}
+          />
+          {target?.fields.map((v, id) => {
+            return (
+              <Description
+                label={
+                  <div className=" text-[0.8rem] pl-4">
+                    {id + 1}.이름 / 유형
+                  </div>
+                }
+                value={
+                  <div className=" text-[0.8rem] pl-4">{`${v.fieldName} / ${v.fieldType}`}</div>
+                }
+              />
+            );
+          })}
         </div>
-        <div>필드: </div>
       </Card>
       <Modal
         centered
         open={open}
         onCancel={() => setOpen(false)}
+        onOk={onSubmit}
         title="토픽 수정"
+        loading={isLoading}
       >
         <div className="flex flex-col gap-2 mt-8">
           <div className="flex gap-2">
             <div className="min-w-20">토픽 이름</div>
-            <Input value={target?.topicName} />
+            <Input
+              disabled
+              value={params?.topicName}
+              onChange={({ target }) => onChange(target.value, "topicName")}
+            />
           </div>
           <div className="flex gap-2">
             <div className="min-w-20">토픽 설명</div>
-            <Input value={target?.topicDescription} />
+            <Input
+              value={params?.topicDescription}
+              onChange={({ target }) =>
+                onChange(target.value, "topicDescription")
+              }
+            />
           </div>
           <div className="flex gap-2 items-center">
             <div className="min-w-20">토픽 필드</div>
-            <Select />
+            {target?.fields.map(v => {
+              return (
+                <div>
+                  <Input value={v.fieldName} />
+                  <Select value={v.fieldType} options={options} />
+                </div>
+              );
+            })}
           </div>
         </div>
       </Modal>

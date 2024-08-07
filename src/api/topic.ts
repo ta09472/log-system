@@ -8,7 +8,7 @@ type CreateTopicParams = {
   fields?: Filed | [];
 };
 
-type PutTopicParams = CreateTopicParams & { id: number };
+export type PutTopicParams = CreateTopicParams & { id: number };
 type DeleteTopicParams = { id: number };
 
 export const topic = {
@@ -34,6 +34,7 @@ export const topic = {
         replicationFactor: 1,
         fields,
       });
+
       return response;
     } catch (error) {
       errorHandleByCode(error);
@@ -52,6 +53,7 @@ export const topic = {
         topicDescription,
         fields,
       });
+      console.log(response);
       return response;
     } catch (error) {
       errorHandleByCode(error);

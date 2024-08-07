@@ -1,6 +1,6 @@
 export type Filed = {
-  filedName: string;
-  filedType: string;
+  fieldName: string;
+  fieldType: string;
 };
 
 export type Topic = {
