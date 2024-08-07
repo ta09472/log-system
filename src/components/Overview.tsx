@@ -1,25 +1,20 @@
-import { Button, Card, Input, Modal, Select, Statistic } from "antd";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { Button, Card, Divider, Statistic } from "antd";
+import { useQuery } from "react-query";
 import { useSearchParams } from "react-router-dom";
 import api from "../api";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import "../override.css";
 
-import { Topic } from "../schema/topic";
-import { PutTopicParams } from "../api/topic";
 import Description from "./Description";
-
-const options = [
-  { value: "string", label: "string" },
-  { value: "integer", label: "integer" },
-  { value: "long", label: "long" },
-  { value: "float", label: "float" },
-  { value: "double", label: "double" },
-];
+import useWebSocket from "../hook/useWebSocket";
+// import dayjs from "dayjs";
+import WorkspaceEditModal from "./WorkspaceEditModal";
 
 export default function Overview() {
-  const queryClient = useQueryClient();
   const [searchParams] = useSearchParams();
   const workspaceId = searchParams.get("workspace") ?? "";
+
+  const ws = useWebSocket();
 
   const { data } = useQuery({
     queryKey: ["dashboard"],
@@ -29,77 +24,10 @@ export default function Overview() {
   const [open, setOpen] = useState(false);
 
   const target = data?.data.find(datum => datum.id.toString() === workspaceId);
-  const [params, setParams] = useState<Topic | undefined>(target);
 
-  useEffect(() => {
-    // WebSocket 연결 설정
-    const socket = new WebSocket("ws://14.55.157.117:8080/ws");
+  // console.log(dayjs(ws.message.timestamp).format("YYYY-MM-DD HH:mm:ss"));
 
-    // WebSocket 연결이 열릴 때
-    socket.onopen = () => {
-      console.log("WebSocket connected");
-      // setWs(socket);
-    };
-
-    // WebSocket 메시지를 받을 때
-    socket.onmessage = event => {
-      const message = event.data;
-      // setMessages((prevMessages) => [...prevMessages, message]);
-      console.log(message);
-    };
-
-    // WebSocket 연결이 닫힐 때
-    socket.onclose = () => {
-      console.log("WebSocket disconnected");
-    };
-
-    // WebSocket 오류 발생 시
-    socket.onerror = error => {
-      console.error("WebSocket error:", error);
-    };
-
-    // 컴포넌트 언마운트 시 WebSocket 연결 닫기
-    return () => {
-      socket.close();
-    };
-  }, []);
-
-  const { mutate: editTopic, isLoading } = useMutation({
-    mutationFn: api.topic.editTopic,
-    onSuccess: () => {
-      queryClient.invalidateQueries(["dashboard"]);
-    },
-  });
-
-  const onSubmit = () => {
-    if (!params) return;
-
-    editTopic(params as PutTopicParams);
-    setOpen(false);
-  };
-
-  const onChange = (v: string, key: string) => {
-    switch (key) {
-      case "topicName":
-        setParams(prev => {
-          return { ...prev, topicName: v } as Topic;
-        });
-        break;
-      case "topicDescription":
-        setParams(prev => {
-          return { ...prev, topicDescription: v } as Topic;
-        });
-        break;
-      case "fields":
-        setParams(prev => {
-          return { ...prev, fields: v } as Topic;
-        });
-        break;
-      default:
-        break;
-    }
-  };
-
+  console.log(ws.message);
   return (
     <div className="flex gap-2">
       <Card bordered={false} className="basis-1/5">
@@ -159,6 +87,7 @@ export default function Overview() {
           tooltip={{ text: "이 토픽에 대해 사용자가 작성한 설명입니다." }}
         />
 
+        <Divider className=" my-2" />
         <div>
           <Description
             label="데이터 필드"
@@ -180,45 +109,7 @@ export default function Overview() {
           })}
         </div>
       </Card>
-      <Modal
-        centered
-        open={open}
-        onCancel={() => setOpen(false)}
-        onOk={onSubmit}
-        title="토픽 수정"
-        loading={isLoading}
-      >
-        <div className="flex flex-col gap-2 mt-8">
-          <div className="flex gap-2">
-            <div className="min-w-20">토픽 이름</div>
-            <Input
-              disabled
-              value={params?.topicName}
-              onChange={({ target }) => onChange(target.value, "topicName")}
-            />
-          </div>
-          <div className="flex gap-2">
-            <div className="min-w-20">토픽 설명</div>
-            <Input
-              value={params?.topicDescription}
-              onChange={({ target }) =>
-                onChange(target.value, "topicDescription")
-              }
-            />
-          </div>
-          <div className="flex gap-2 items-center">
-            <div className="min-w-20">토픽 필드</div>
-            {target?.fields.map(v => {
-              return (
-                <div>
-                  <Input value={v.fieldName} />
-                  <Select value={v.fieldType} options={options} />
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </Modal>
+      <WorkspaceEditModal open={open} onClose={() => setOpen(false)} />
     </div>
   );
 }

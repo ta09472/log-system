@@ -5,18 +5,27 @@ import "./index.css";
 import Dashboard from "./page/Dashboard";
 import About from "./page/Report";
 import History from "./page/History";
+import { ConfigProvider } from "antd";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <Router>
-      <Routes>
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/report" element={<About />} />
-        <Route path="/history" element={<History />} />
-      </Routes>
-    </Router>
+    <ConfigProvider
+      theme={{
+        token: {
+          colorPrimary: "#000000",
+        },
+      }}
+    >
+      <Router>
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/report" element={<About />} />
+          <Route path="/history" element={<History />} />
+        </Routes>
+      </Router>
+    </ConfigProvider>
   </QueryClientProvider>
 );
 

@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import Workspace from "./Workspace";
 import api from "../api";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import InitialWorkSpace from "./InitialWorkspace";
 
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 
@@ -27,7 +28,7 @@ const WorkSpaceTab: React.FC = () => {
       return {
         label: datum.topicName,
         key: datum.id.toString(),
-        children: <Workspace topicName={datum.topicDescription} />,
+        children: !datum.fields.length ? <InitialWorkSpace /> : <Workspace />,
       };
     })
     .sort((a, b) => Number(a.key) - Number(b.key));
