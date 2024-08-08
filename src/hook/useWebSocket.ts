@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 export default function useWebSocket() {
-  const socket = new WebSocket("ws://14.55.157.117:8080/ws");
+  const socket = new WebSocket("ws://211.225.158.78:8080/ws");
   const [message, setMessage] = useState({});
   useEffect(() => {
     // WebSocket 연결 설정

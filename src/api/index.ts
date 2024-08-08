@@ -1,10 +1,10 @@
-import { log } from "./log";
+import { raw } from "./raw";
 import { statistics } from "./statistics";
 import { topic } from "./topic";
 
 const api = {
   topic,
-  log,
+  raw,
   statistics,
 };
 

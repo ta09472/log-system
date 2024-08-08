@@ -8,10 +8,8 @@ import { PutTopicParams } from "../api/topic";
 
 const options = [
   { value: "string", label: "string" },
-  { value: "integer", label: "integer" },
-  { value: "long", label: "long" },
-  { value: "float", label: "float" },
-  { value: "double", label: "double" },
+  { value: "number", label: "number" },
+  { value: "boolean", label: "boolean" },
 ];
 
 interface Props {
@@ -204,6 +202,7 @@ export default function WorkspaceEditModal({ open, onClose }: Props) {
                   value={v.fieldName}
                   className="basis-2/3"
                   variant="filled"
+                  disabled={!!target?.fields.at(i)?.fieldName}
                   onChange={({ currentTarget }) => {
                     const newValue = { ...v, fieldName: currentTarget.value };
                     const updatedArray = params?.fields.map((item, index) =>
@@ -221,6 +220,7 @@ export default function WorkspaceEditModal({ open, onClose }: Props) {
                 <Select
                   value={v.fieldType}
                   options={options}
+                  disabled={!!target?.fields.at(i)?.fieldType}
                   className=" basis-1/3"
                   onChange={value => {
                     const newValue = { ...v, fieldType: value };

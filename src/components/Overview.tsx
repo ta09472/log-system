@@ -53,7 +53,7 @@ export default function Overview() {
       </Card>
       <Card bordered={false} className="flex-1 flex-col">
         <div className="flex justify-between items-center">
-          <div className=" font-bold text-lg">토픽 정보</div>
+          <div className=" font-bold text-lg">Topic Info</div>
           <Button type="text" onClick={() => setOpen(true)}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -74,7 +74,7 @@ export default function Overview() {
 
         <Description
           value={target?.topicName}
-          label="토픽명"
+          label="Name"
           tooltip={{ text: "대충 토픽이 뭔지에 대한 설명" }}
         />
         <Description
@@ -83,14 +83,14 @@ export default function Overview() {
               ? "토픽 설명이 없습니다."
               : target?.topicDescription
           }
-          label="토픽설명"
+          label="Description"
           tooltip={{ text: "이 토픽에 대해 사용자가 작성한 설명입니다." }}
         />
 
         <Divider className=" my-2" />
         <div>
           <Description
-            label="데이터 필드"
+            label="Data Fields"
             tooltip={{ text: "대충 데이터 필드에 대한 설명" }}
           />
           {target?.fields.map((v, id) => {
@@ -98,7 +98,7 @@ export default function Overview() {
               <Description
                 label={
                   <div className=" text-[0.8rem] pl-4">
-                    {id + 1}.이름 / 유형
+                    {id + 1}. Name / Type
                   </div>
                 }
                 value={
