@@ -41,21 +41,11 @@ export default function NavBar() {
             type="text"
             size="large"
             className={
-              pathname === "/report" ? "text-black" : "text-neutral-400"
+              pathname === "/setting" ? "text-black" : "text-neutral-400"
             }
-            onClick={() => navigate("/report")}
+            onClick={() => navigate("/setting")}
           >
-            Report
-          </Button>
-          <Button
-            type="text"
-            size="large"
-            className={
-              pathname === "/history" ? "text-black" : "text-neutral-400"
-            }
-            onClick={() => navigate("/history")}
-          >
-            History
+            Setting
           </Button>
         </div>
 

@@ -18,3 +18,7 @@
 .ant-dropdown {
   top: 56px !important;
 }
+
+.ant-modal-mask {
+  background-color: rgba(0, 0, 0, 0.1); /* 원하는 색상으로 변경 */
+}

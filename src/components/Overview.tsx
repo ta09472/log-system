@@ -80,7 +80,7 @@ export default function Overview() {
         <Description
           value={
             target?.topicDescription.length === 0
-              ? "토픽 설명이 없습니다."
+              ? "There is no Description."
               : target?.topicDescription
           }
           label="Description"
