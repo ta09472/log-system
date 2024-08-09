@@ -74,7 +74,7 @@ export default function SearchHistory({ onClose }: Props) {
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke-width="1.5"
-                    stroke="currentColor"
+                    stroke="#696969"
                     className="size-5"
                   >
                     <path

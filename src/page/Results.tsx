@@ -38,7 +38,7 @@ export default function Report() {
   });
 
   // 이거 가지고 데이터 조회
-  // 서치타입에 따라서 url 바꿔서
+  // 서치타입에 따라서 url 바꿔서\
 
   useEffect(() => {
     setForm({
@@ -50,11 +50,11 @@ export default function Report() {
     });
 
     mutate({
-      topicName: form.topicName,
-      from: form.from,
-      to: form.to,
-      condition: form.condition,
-      searchType: form.searchType,
+      topicName: topicName,
+      from: from,
+      to: to,
+      condition: condition,
+      searchType: searchType as "raw" | "statics",
     });
   }, [search]);
 
