@@ -1,4 +1,4 @@
-import { Button, Card, Divider, Statistic } from "antd";
+import { Button, Card, Divider } from "antd";
 import { useQuery } from "react-query";
 import { useSearchParams } from "react-router-dom";
 import api from "../api";

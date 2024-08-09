@@ -1,7 +1,6 @@
-import LogTable from "./LogTable";
 import Overview from "./Overview";
 import Statistics from "./Statistics";
-import Test from "./Test";
+import TimeLine from "./TimeLine";
 
 export default function Workspace() {
   return (
@@ -13,7 +12,7 @@ export default function Workspace() {
         <Statistics />
       </div>
       <div className="basis-1/4 h-full">
-        <Test />
+        <TimeLine />
       </div>
     </div>
   );

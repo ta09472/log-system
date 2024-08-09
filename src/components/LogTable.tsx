@@ -1,4 +1,4 @@
-import { Card, Divider, Modal, Popover, Table } from "antd";
+import { Divider, Modal, Popover } from "antd";
 import useWebSocket from "../hook/useWebSocket";
 import { useLocation, useSearchParams } from "react-router-dom";
 import { useQuery } from "react-query";
@@ -6,12 +6,12 @@ import api from "../api";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 
-const current = dayjs(new Date()).format(" MMMM DD, HH:mm:ss");
-
 export default function LogTable() {
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const workspaceId = searchParams.get("workspace") ?? "";
+
+  const [current] = useState(dayjs(new Date()).format(" MMMM DD, HH:mm:ss"));
 
   const [messages, setMessages] = useState<unknown[]>([]);
   const [open, setOpen] = useState(false);
@@ -108,7 +108,7 @@ export default function LogTable() {
         Displays data starting from {dayjs(current).format(" MMMM DD")} at{" "}
         {dayjs(current).format("HH:mm:ss")}
       </div>
-      <div className="h-[44rem] overflow-auto flex flex-col gap-1">
+      <div className="h-[42rem] overflow-auto flex flex-col gap-1">
         {messages.length === 0 ? (
           <div className=" h-full flex items-center justify-center font-semibold text-lg text-neutral-600">
             No Data

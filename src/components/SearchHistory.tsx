@@ -26,7 +26,19 @@ export default function SearchHistory({ onClose }: Props) {
 
   return (
     <>
-      <div className="font-semibold text-lg">Recent</div>
+      <div className="font-semibold text-lg flex justify-between">
+        <div>Recent</div>
+        <Button
+          className=" text-neutral-500"
+          type="text"
+          onClick={() => {
+            customLocalStorage.deleteItem("form");
+            setTmp([]);
+          }}
+        >
+          History Clear
+        </Button>
+      </div>
       <div className="flex gap-2 items-center overflow-auto max-w-[40rem] min-h-[6rem]">
         {items.toReversed()?.map(v => (
           <div className=" flex-col flex" key={v.id}>
@@ -90,7 +102,8 @@ export default function SearchHistory({ onClose }: Props) {
                   type="text"
                   size="small"
                   className=" self-end  px-0"
-                  onClick={() => {
+                  onClick={e => {
+                    e.stopPropagation(); // 이벤트 버블링 방지
                     // 객체가 아니라 id로 찾아서 제거해야됨
                     deleteItem(v.id);
                     setTmp(items);
@@ -122,6 +135,7 @@ export default function SearchHistory({ onClose }: Props) {
           </div>
         ))}
       </div>
+
       <Divider />
     </>
   );
