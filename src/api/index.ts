@@ -1,11 +1,11 @@
 import { raw } from "./raw";
-import { statistics } from "./statistics";
+import { aggregation } from "./aggregation";
 import { topic } from "./topic";
 
 const api = {
   topic,
   raw,
-  statistics,
+  aggregation,
 };
 
 export default api;

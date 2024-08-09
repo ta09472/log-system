@@ -25,6 +25,8 @@ const accessors = {
 };
 
 export default function Statistics() {
+  // /api/aggregation/list/{topicName} 이거 조회해서 없으면 아래꺼 렌더링
+
   // return (
   //   <Card bordered={false} className=" h-full flex items-center justify-center">
   //     <Button type="primary">Edit</Button>

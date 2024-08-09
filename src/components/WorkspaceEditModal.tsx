@@ -73,6 +73,7 @@ export default function WorkspaceEditModal({ open, onClose }: Props) {
         classNames={{
           footer: "m-0",
         }}
+        okText="Save"
         centered
         open={open}
         cancelButtonProps={{
@@ -89,12 +90,12 @@ export default function WorkspaceEditModal({ open, onClose }: Props) {
         }}
         onCancel={onClose}
         onOk={onSubmit}
-        title="토픽 수정"
+        title="Topic Edit"
         loading={isLoading}
       >
         <div className="flex flex-col gap-2 mt-8">
           <div className="flex gap-2 items-center">
-            <div className="min-w-20">토픽 이름</div>
+            <div className="min-w-20">Name</div>
             <Input
               disabled
               variant="filled"
@@ -103,7 +104,7 @@ export default function WorkspaceEditModal({ open, onClose }: Props) {
             />
           </div>
           <div className="flex gap-2 items-center">
-            <div className="min-w-20">토픽 설명</div>
+            <div className="min-w-20">Description</div>
             <Input
               variant="filled"
               value={params?.topicDescription}
@@ -115,7 +116,7 @@ export default function WorkspaceEditModal({ open, onClose }: Props) {
           <Divider />
           <div className="flex gap-2 items-center">
             <div className="flex justify-between w-full">
-              <div>데이터 필드</div>
+              <div>Data Fields</div>
               <Button
                 onClick={() => {
                   const isNotBlank = params?.fields.every(
@@ -164,35 +165,6 @@ export default function WorkspaceEditModal({ open, onClose }: Props) {
               />
             </div>
           </div>
-          {/* {params?.fields.length === 0 ?? (
-            <div className=" flex justify-between gap-4">
-              <Input
-                placeholder="데이터 필드 이름을 입력해주세요."
-                ref={ref}
-                //   value={v.fieldName}
-                className="basis-2/3"
-                variant="filled"
-              />
-              <Select
-                //   value={v.fieldType}
-                options={options}
-                className=" basis-1/3"
-                //   onChange={value => {
-                //     const newValue = { ...v, fieldType: value };
-                //     const updatedArray = params?.fields.map((item, index) =>
-                //       index === i ? newValue : item
-                //     );
-
-                //     setParams(prev => {
-                //       return {
-                //         ...prev,
-                //         fields: updatedArray,
-                //       } as Topic;
-                //     });
-                //   }}
-              />
-            </div>
-          )} */}
           {params?.fields.map((v, i) => {
             return (
               <div className=" flex justify-between gap-4">
