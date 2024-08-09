@@ -329,7 +329,7 @@ export default function DropdownContent({ ref, onClose }: Props) {
                   </div>
                 </div>
               )}
-              <div className="flex-col gap-2 flex overflow-auto max-h-40 py-1">
+              <div className="flex-col gap-2 flex overflow-auto max-h-28 py-1">
                 {form?.condition?.map((v, id) => (
                   <div className=" w-full flex gap-2 items-center">
                     <div className="text-neutral-500 basis-1/12">{id + 1}</div>
@@ -389,7 +389,7 @@ export default function DropdownContent({ ref, onClose }: Props) {
               <Divider />
             </>
           )}
-          <div className=" flex gap-2 mt-4">
+          <div className=" flex gap-2 mt-2">
             <Button
               block
               type="text"
