@@ -1,4 +1,4 @@
-import { Card, Divider, Table } from "antd";
+import { Card, Divider, Modal, Popover, Table } from "antd";
 import useWebSocket from "../hook/useWebSocket";
 import { useLocation, useSearchParams } from "react-router-dom";
 import { useQuery } from "react-query";
@@ -6,12 +6,16 @@ import api from "../api";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 
+const current = dayjs(new Date()).format(" MMMM DD, HH:mm:ss");
+
 export default function LogTable() {
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const workspaceId = searchParams.get("workspace") ?? "";
 
   const [messages, setMessages] = useState<unknown[]>([]);
+  const [open, setOpen] = useState(false);
+  const [detail, setDetail] = useState();
 
   const { data: topic } = useQuery({
     queryKey: ["dashboard"],
@@ -75,34 +79,89 @@ export default function LogTable() {
 
   return (
     <div className="flex flex-col gap-3">
-      <div className=" font-bold text-lg">{target?.topicName}</div>
+      <div className=" font-bold text-lg flex justify-between">
+        <div>{target?.topicName}</div>
+        <Popover
+          content={
+            <div className=" text-xs text-neutral-500">
+              Only up to 100 data entries are displayed from the shown time.
+            </div>
+          }
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="#8e8e8e"
+            className="size-5"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z"
+            />
+          </svg>
+        </Popover>
+      </div>
+      <div className=" text-neutral-500">
+        Displays data starting from {dayjs(current).format(" MMMM DD")} at{" "}
+        {dayjs(current).format("HH:mm:ss")}
+      </div>
       <div className="h-[44rem] overflow-auto flex flex-col gap-1">
-        {messages.map(v => {
+        {messages.length === 0 ? (
+          <div className=" h-full flex items-center justify-center font-semibold text-lg text-neutral-600">
+            No Data
+          </div>
+        ) : (
+          messages.map(v => {
+            return (
+              <div
+                className="flex flex-col rounded-md cursor-pointer "
+                key={JSON.stringify(v)}
+                onClick={() => {
+                  setDetail(v);
+                  setOpen(true);
+                }}
+              >
+                {Object.entries(v ?? {})
+                  .slice(0, 4)
+                  .map(([key, value]) => {
+                    return (
+                      <div>
+                        {key.charAt(0).toUpperCase() + key.slice(1)}: {value}
+                      </div>
+                    );
+                  })}
+                <Divider className=" my-2 p-0" />
+              </div>
+            );
+          })
+        )}
+      </div>
+      <Modal
+        open={open}
+        onCancel={() => setOpen(false)}
+        centered
+        footer={null}
+        title={<div className=" text-2xl">Log Detail</div>}
+      >
+        {Object.entries(detail ?? {}).map(([key, value]) => {
           return (
-            <div
-              className="flex flex-col gap-1rounded-md p-4"
-              key={JSON.stringify(v)}
-            >
-              {Object.entries(v ?? {}).map(([key, value]) => {
-                return (
-                  <div>
-                    {key}: {value}
-                  </div>
-                );
-              })}
-              <Divider />
+            <div className="flex flex-col gap-2" key={key}>
+              {key === "timestamp" ? (
+                <div className="text-neutral-500 pt-2 self-end">
+                  {dayjs(value).format("MMMM DD, YYYY [at] h:mm:ss A")}
+                </div>
+              ) : (
+                <div>
+                  {key.charAt(0).toUpperCase() + key.slice(1)}: {value}
+                </div>
+              )}
             </div>
           );
         })}
-      </div>
-      {/* <Table
-        size="small"
-        scroll={{ y: "20rem" }}
-        columns={columns}
-        dataSource={messages}
-        className=" max-h-[30rem] overflow-scroll"
-        pagination={false}
-      /> */}
+      </Modal>
     </div>
   );
 }
