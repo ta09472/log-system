@@ -2,7 +2,7 @@ export type Raw = {
   totalResultCount: number;
   result: [
     {
-      topicName: "string";
+      topicName: string;
       timestamp: number;
       data: {
         additionalProp1: object;
@@ -13,10 +13,25 @@ export type Raw = {
   ];
 };
 
+type Condition = { fieldName: string; keyword: string; equal: boolean };
+
 export type RawParams = {
   topicName?: string;
   from?: string;
   to?: string;
+  condition?: Condition[];
+  // 내가 편하려고 넣은 타입
   searchType: "raw" | "statics";
-  condition?: { fieldName: string; keyword: string; equal: boolean }[];
+};
+
+export type AggParams = {
+  topicName: string;
+  from: number;
+  to: number;
+  searchSettings: [
+    {
+      settingName: string;
+      conditionList: Condition[];
+    },
+  ];
 };

@@ -346,10 +346,7 @@ export default function DropdownContent({ ref, onClose }: Props) {
                       className="basis-5/12"
                       placeholder="Enter the keyword you are looking for"
                       onChange={({ currentTarget }) =>
-                        onKeywordChange(
-                          currentTarget.value.toLocaleLowerCase(),
-                          id
-                        )
+                        onKeywordChange(currentTarget.value, id)
                       }
                     />
                     <Switch

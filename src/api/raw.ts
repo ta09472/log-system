@@ -23,4 +23,23 @@ export const raw = {
       errorHandleByCode(error);
     }
   },
+  getAggregationData: async (params: RawParams) => {
+    const newObj = _.omit(params, "searchType");
+    const convertedParams = {
+      ...newObj,
+      from: new Date(newObj.from ?? "").getTime(),
+      to: new Date(newObj.to ?? "").getTime(),
+    };
+
+    try {
+      const response = await instance.post<Raw>(
+        "/api/log-data/aggregation",
+        convertedParams
+      );
+
+      return response;
+    } catch (error) {
+      errorHandleByCode(error);
+    }
+  },
 };

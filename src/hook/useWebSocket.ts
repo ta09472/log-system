@@ -1,41 +1,43 @@
 import { useEffect, useState } from "react";
+import { Client } from "@stomp/stompjs";
 
-export default function useWebSocket() {
-  const socket = new WebSocket("ws://211.225.158.78:8080/ws");
-  const [message, setMessage] = useState({});
+interface Props {
+  topicName: string;
+  searchType: "raw" | "agg";
+}
+
+export default function useWebSocket({ topicName, searchType }: Props) {
+  const [message, setMessage] = useState<unknown>({});
+
+  const client = new Client({
+    brokerURL: `ws://211.225.158.78:8080/ws`, // 기본 WebSocket URL
+    reconnectDelay: 5000, // 연결 실패 시 5초 후 재시도
+    onConnect: () => {
+      console.log("WebSocket connected with STOMP");
+
+      // 특정 토픽에 구독
+      client.subscribe(`/topic/${searchType}/${topicName}`, message => {
+        const parsedMessage = JSON.parse(message.body);
+        setMessage(parsedMessage);
+      });
+    },
+    onStompError: frame => {
+      console.error("STOMP error:", frame.headers["message"]);
+      console.error("Additional details:", frame.body);
+    },
+  });
+
   useEffect(() => {
-    // WebSocket 연결 설정
+    // STOMP 클라이언트 설정
 
-    // WebSocket 연결이 열릴 때
-    socket.onopen = () => {
-      console.log("WebSocket connected");
-      // setWs(socket);
-    };
-
-    // WebSocket 메시지를 받을 때
-    socket.onmessage = event => {
-      const message = event.data;
-      // setMessages((prevMessages) => [...prevMessages, message]);
-      //   console.log(message);
-
-      setMessage(JSON.parse(message));
-    };
-
-    // WebSocket 연결이 닫힐 때
-    socket.onclose = () => {
-      console.log("WebSocket disconnected");
-    };
-
-    // WebSocket 오류 발생 시
-    socket.onerror = error => {
-      console.error("WebSocket error:", error);
-    };
-
+    client.activate(); // STOMP 클라이언트 활성화
+    console.log(message);
     // 컴포넌트 언마운트 시 WebSocket 연결 닫기
     return () => {
-      socket.close();
+      client.deactivate();
+      console.log("WebSocket disconnected");
     };
-  }, []);
+  }, [topicName, searchType]);
 
   return { message };
 }

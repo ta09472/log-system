@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Card, Skeleton, Table } from "antd";
 import Layout from "../Layout/Layout";
 
@@ -76,15 +77,8 @@ export default function Report() {
   });
 
   const columns = Object.keys(transformedArray?.at(0) ?? {}).map(key => {
-    // if (date) {
-    //   return {
-    //     title: key.charAt(0).toUpperCase() + key.slice(1), // 첫 글자를 대문자로 설정
-    //     dataIndex: dayjs(key).format("YYYY-MM-DD HH:mm:sss"),
-    //     key: key,
-    //   };
-    // }
     return {
-      title: key.charAt(0).toUpperCase() + key.slice(1), // 첫 글자를 대문자로 설정
+      title: key.charAt(0).toUpperCase() + key.slice(1),
       dataIndex: key,
       key: key,
     };

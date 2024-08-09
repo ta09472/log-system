@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Button, Divider, Popover } from "antd";
+import { Button, Divider, Popover, Tag } from "antd";
 import customLocalStorage from "../util/localstorage";
 import { RawParams } from "../schema/raw";
 import { useNavigate } from "react-router-dom";
@@ -27,10 +27,11 @@ export default function SearchHistory({ onClose }: Props) {
   return (
     <>
       <div className="font-semibold text-lg">Recent</div>
-      <div className="flex gap-2 items-center overflow-auto max-w-[33rem] min-h-[6rem]">
+      <div className="flex gap-2 items-center overflow-auto max-w-[40rem] min-h-[6rem]">
         {items.toReversed()?.map(v => (
           <div className=" flex-col flex" key={v.id}>
             <Popover
+              title="Search Condition"
               getPopupContainer={triggerNode =>
                 triggerNode.parentNode as HTMLElement
               }
@@ -38,17 +39,43 @@ export default function SearchHistory({ onClose }: Props) {
               placement="topLeft"
               arrow={false}
               content={
-                <div>
-                  {v.condition?.map((v, id) => (
-                    <div className="flex items-center gap-1" key={id}>
-                      <div>Data Field: {v.fieldName}</div>
-                      <div>Keyword: {v.keyword}</div>
-                      <div>{v.equal === true ? "true" : "false"}</div>
-                    </div>
-                  ))}
-                </div>
+                v.condition?.length === 0 ? (
+                  <div className="text-neutral-500  ">
+                    No keyword provided. Displaying
+                    <strong>all available results.</strong>
+                  </div>
+                ) : (
+                  <div className=" flex flex-col gap-1">
+                    {v.condition?.map((v, id) => (
+                      <div key={id}>
+                        <div className=" flex gap-2">
+                          <div className="text-neutral-500 basis-5/12 ">
+                            <div>Data Field</div>
+                            <div className="text-neutral-700 ">
+                              {v.fieldName}
+                            </div>
+                          </div>
+                          <div className="text-neutral-500 basis-5/12  ">
+                            <div>Keyword</div>
+                            <div className="text-neutral-700">{v.keyword}</div>
+                          </div>
+                          <div className="text-neutral-500 basis-2/12  ">
+                            <div>Match Criteria</div>
+
+                            <Tag
+                              className="text-neutral-700 basis-2/12 block"
+                              color={v.equal === true ? "#000000" : "#aaaaaa"}
+                            >
+                              {v.equal === true ? "Exactly" : "Contains"}
+                            </Tag>
+                          </div>
+                        </div>
+                        <div className="flex items-center mt-2"></div>
+                      </div>
+                    ))}
+                  </div>
+                )
               }
-              title="Search Condition"
             >
               <Button
                 type="text"
