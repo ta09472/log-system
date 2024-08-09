@@ -5,7 +5,7 @@ import { RawParams } from "../schema/raw";
 import { useEffect, useState } from "react";
 
 import "../override.css";
-import { useSearchParams } from "react-router-dom";
+import { useLocation, useSearchParams } from "react-router-dom";
 import { useMutation } from "react-query";
 import api from "../api";
 
@@ -20,6 +20,7 @@ const initialForm: RawParams = {
 export default function Report() {
   const [searchParams] = useSearchParams();
   const { mutate, isLoading, data } = useMutation(api.raw.getLogData);
+  const { search } = useLocation();
 
   const topicName = searchParams.get("topicName") ?? initialForm.topicName;
   const from = searchParams.get("start") ?? initialForm.from;
@@ -40,13 +41,13 @@ export default function Report() {
   // 서치타입에 따라서 url 바꿔서
 
   useEffect(() => {
-    setForm({
-      topicName,
-      from,
-      to,
-      condition,
-      searchType: searchType as "raw" | "statics",
-    });
+    // setForm({
+    //   topicName,
+    //   from,
+    //   to,
+    //   condition,
+    //   searchType: searchType as "raw" | "statics",
+    // });
 
     mutate({
       topicName: form.topicName,
@@ -58,11 +59,7 @@ export default function Report() {
     console.log("render");
     console.log(searchType);
     console.log(form);
-  }, []);
-
-  if (isLoading) {
-    return <Spin />;
-  }
+  }, [search]);
 
   return (
     <Layout>

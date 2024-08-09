@@ -7,28 +7,33 @@ import About from "./page/Results";
 import History from "./page/History";
 import { ConfigProvider } from "antd";
 import Results from "./page/Results";
+import NotFound from "./page/NotFound";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 const queryClient = new QueryClient();
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <ConfigProvider
-      theme={{
-        token: {
-          colorPrimary: "#000000",
-        },
-      }}
-    >
-      <Router>
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/report" element={<About />} />
-          <Route path="/history" element={<History />} />
-          <Route path="/results" element={<Results />} />
-        </Routes>
-      </Router>
-    </ConfigProvider>
-  </QueryClientProvider>
+  <ErrorBoundary>
+    <QueryClientProvider client={queryClient}>
+      <ConfigProvider
+        theme={{
+          token: {
+            colorPrimary: "#000000",
+          },
+        }}
+      >
+        <Router>
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/report" element={<About />} />
+            <Route path="/history" element={<History />} />
+            <Route path="/results" element={<Results />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Router>
+      </ConfigProvider>
+    </QueryClientProvider>
+  </ErrorBoundary>
 );
 
 export default App;
