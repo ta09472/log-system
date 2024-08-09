@@ -1,6 +1,8 @@
 import Layout from "../Layout/Layout";
+import customLocalStorage from "../util/localstorage";
 
 export default function Setting() {
+  console.log(customLocalStorage.getItem("form"));
   return (
     <Layout>
       할지말지 고민중

@@ -1,4 +1,4 @@
-import { Button, Spin, Table } from "antd";
+import { Table } from "antd";
 import Layout from "../Layout/Layout";
 
 import { RawParams } from "../schema/raw";
@@ -41,13 +41,13 @@ export default function Report() {
   // 서치타입에 따라서 url 바꿔서
 
   useEffect(() => {
-    // setForm({
-    //   topicName,
-    //   from,
-    //   to,
-    //   condition,
-    //   searchType: searchType as "raw" | "statics",
-    // });
+    setForm({
+      topicName,
+      from,
+      to,
+      condition,
+      searchType: searchType as "raw" | "statics",
+    });
 
     mutate({
       topicName: form.topicName,
@@ -56,9 +56,6 @@ export default function Report() {
       condition: form.condition,
       searchType: form.searchType,
     });
-    console.log("render");
-    console.log(searchType);
-    console.log(form);
   }, [search]);
 
   return (
@@ -66,7 +63,7 @@ export default function Report() {
       {JSON.stringify(data?.data)}
       {JSON.stringify(form)}
 
-      <Table />
+      <Table loading={isLoading} />
     </Layout>
   );
 }

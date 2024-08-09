@@ -3,12 +3,11 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import "antd/dist/reset.css";
 import "./index.css";
 import Dashboard from "./page/Dashboard";
-import About from "./page/Results";
-import History from "./page/History";
 import { ConfigProvider } from "antd";
 import Results from "./page/Results";
 import NotFound from "./page/NotFound";
 import ErrorBoundary from "./components/ErrorBoundary";
+import Setting from "./page/Setting";
 
 const queryClient = new QueryClient();
 
@@ -25,9 +24,9 @@ const App = () => (
         <Router>
           <Routes>
             <Route path="/" element={<Dashboard />} />
-            <Route path="/report" element={<About />} />
-            <Route path="/history" element={<History />} />
             <Route path="/results" element={<Results />} />
+            <Route path="/setting" element={<Setting />} />
+
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Router>

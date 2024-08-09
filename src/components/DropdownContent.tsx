@@ -17,6 +17,8 @@ import disabled7DaysDate from "../util/dateRange";
 import { RawParams } from "../schema/raw";
 import dayjs from "dayjs";
 import { NoUndefinedRangeValueType } from "rc-picker/lib/PickerInput/RangePicker";
+import customLocalStorage from "../util/localstorage";
+import SearchHistory from "./SearchHistory";
 
 interface Props {
   ref: LegacyRef<InputRef> | undefined;
@@ -26,13 +28,12 @@ interface Props {
 const initialForm: RawParams = {
   topicName: undefined,
   searchType: "raw",
-  from: undefined,
-  to: undefined,
+  from: dayjs().subtract(1, "day").toISOString(),
+  to: dayjs().toISOString(),
   condition: [{ fieldName: "", keyword: "", equal: true }],
 };
 
 export default function DropdownContent({ ref, onClose }: Props) {
-  // 이거 URL params로 조져야됨
   const [form, setForm] = useState<RawParams>(initialForm);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -41,7 +42,7 @@ export default function DropdownContent({ ref, onClose }: Props) {
     queryKey: ["dashboard"],
     queryFn: () => api.topic.getTopicList(),
   });
-
+  const { search } = useLocation();
   const { mutate, isLoading } = useMutation(api.raw.getLogData);
 
   const target = data?.data.find(
@@ -77,7 +78,7 @@ export default function DropdownContent({ ref, onClose }: Props) {
         searchType: searchType as "raw" | "statics",
       });
     }
-  }, []);
+  }, [search]);
 
   const onTopicChange = (value: string) => {
     setForm(prev => {
@@ -239,6 +240,7 @@ export default function DropdownContent({ ref, onClose }: Props) {
         </Button>
       </div>
       <div className="p-3 flex-col">
+        <SearchHistory onClose={onClose} />
         <div className="flex flex-col gap-2">
           <div className="flex flex-col gap-2 ">
             <div className="font-semibold text-lg">Topic</div>
@@ -403,9 +405,18 @@ export default function DropdownContent({ ref, onClose }: Props) {
               type="primary"
               onClick={() => {
                 const url = `/results?topicName=${encodeURIComponent(form.topicName ?? "")}&searchType=${encodeURIComponent(form.searchType ?? "")}&start=${encodeURIComponent(form.from ?? "")}&end=${encodeURIComponent(form.to ?? "")}&conditions=${encodeURIComponent(JSON.stringify(form.condition))}`;
-
                 mutate(form);
 
+                if (customLocalStorage.getItem("form")) {
+                  // 검색기록이 이미 있다면 배열에 추가
+                  customLocalStorage.addItem("form", form);
+                  navigate(url);
+                  onClose();
+                  return;
+                }
+                // 검색기록이 없다면 새로만들기
+
+                customLocalStorage.createItem("form", form);
                 navigate(url);
                 onClose();
               }}
