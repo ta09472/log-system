@@ -29,7 +29,7 @@ export default function Overview() {
 
   console.log(ws.message);
   return (
-    <div className="flex gap-2">
+    <div className="flex gap-3">
       <Card bordered={false} className="basis-1/5">
         <Statistic
           title="최근 1시간 동안의 발생 로그 개수"

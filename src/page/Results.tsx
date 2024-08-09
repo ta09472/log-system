@@ -1,4 +1,4 @@
-import { Table } from "antd";
+import { Card, Skeleton, Table } from "antd";
 import Layout from "../Layout/Layout";
 
 import { RawParams } from "../schema/raw";
@@ -8,6 +8,7 @@ import "../override.css";
 import { useLocation, useSearchParams } from "react-router-dom";
 import { useMutation } from "react-query";
 import api from "../api";
+import dayjs from "dayjs";
 
 const initialForm: RawParams = {
   topicName: undefined,
@@ -58,12 +59,49 @@ export default function Report() {
     });
   }, [search]);
 
+  const transformedArray = data?.data.result.map(item => {
+    const { data, ...rest } = item;
+    return {
+      ...rest,
+      ...data,
+    };
+  });
+
+  const dataSource = transformedArray?.map(v => {
+    const date = dayjs(v.timestamp).format("YYYY-MM:DD HH:mm:ss");
+    return {
+      ...v,
+      timestamp: date,
+    };
+  });
+
+  const columns = Object.keys(transformedArray?.at(0) ?? {}).map(key => {
+    // if (date) {
+    //   return {
+    //     title: key.charAt(0).toUpperCase() + key.slice(1), // 첫 글자를 대문자로 설정
+    //     dataIndex: dayjs(key).format("YYYY-MM-DD HH:mm:sss"),
+    //     key: key,
+    //   };
+    // }
+    return {
+      title: key.charAt(0).toUpperCase() + key.slice(1), // 첫 글자를 대문자로 설정
+      dataIndex: key,
+      key: key,
+    };
+  });
+
   return (
     <Layout>
-      {JSON.stringify(data?.data)}
-      {JSON.stringify(form)}
+      <Skeleton active loading={isLoading}>
+        <div className=" font-bold text-2xl">
+          검색결과가 {data?.data.result.length}개 있습니다.
+        </div>
+        <div>대충 검색 조건 보여주는 공간</div>
+      </Skeleton>
 
-      <Table loading={isLoading} />
+      <Card loading={isLoading} bordered={false}>
+        <Table loading={isLoading} columns={columns} dataSource={dataSource} />
+      </Card>
     </Layout>
   );
 }

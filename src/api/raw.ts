@@ -13,7 +13,7 @@ export const raw = {
     };
 
     try {
-      const response = await instance.post<Raw[]>(
+      const response = await instance.post<Raw>(
         "/api/log-data",
         convertedParams
       );

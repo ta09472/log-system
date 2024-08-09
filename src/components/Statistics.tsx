@@ -26,7 +26,7 @@ const accessors = {
 
 export default function Statistics() {
   return (
-    <div className="flex gap-2">
+    <div className="flex gap-3">
       <Card className=" basis-2/3" bordered={false}>
         <div className=" font-bold text-lg">시간에 따른 로그 발생(트렌드)</div>
         <div className="  min-h-[20rem]">

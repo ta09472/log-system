@@ -22,3 +22,19 @@
 .ant-modal-mask {
   background-color: rgba(0, 0, 0, 0.1); /* 원하는 색상으로 변경 */
 }
+
+/* CSS 파일 또는 스타일 태그 내에 추가 */
+/* .ant-dropdown {
+  transition: none !important;
+  animation: none !important;
+} */
+
+/* .ant-dropdown {
+  transition: none !important;
+  animation: none !important;
+} */
+
+/* .ant-dropdown-menu {
+  transition: none !important;
+  animation: none !important;
+} */
