@@ -31,14 +31,11 @@ export default function Overview() {
     searchType: "agg",
   });
 
-  console.log(raw);
-  console.log(agg);
-
   return (
     <div className="flex flex-col gap-3 h-full">
       <Card bordered={false} className="flex-col">
         <div className="flex justify-between items-center">
-          <div className="font-bold text-lg">Topic Info</div>
+          <div className="font-bold text-2xl">Topic Info</div>
           <Button type="text" onClick={() => setOpen(true)}>
             <svg
               xmlns="http://www.w3.org/2000/svg"

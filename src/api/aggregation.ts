@@ -1,5 +1,5 @@
 import instance from "../lib/axios";
-import { Aggregation } from "../schema/aggregation";
+import { Aggregation, RealtimeData } from "../schema/aggregation";
 import errorHandleByCode from "../util/error";
 
 export const aggregation = {
@@ -30,7 +30,7 @@ export const aggregation = {
   },
   getCondition: async (topicName: string) => {
     try {
-      const response = await instance.get<[]>(
+      const response = await instance.get<Aggregation[]>(
         `/api/aggregation/list/${topicName}`
       );
       return response;
@@ -42,6 +42,17 @@ export const aggregation = {
   deleteCondition: async (id: number) => {
     try {
       const response = await instance.delete<[]>(`/api/aggregation/list/${id}`);
+      return response;
+    } catch (error) {
+      errorHandleByCode(error);
+    }
+  },
+
+  getRealtimeData: async (topicName: string) => {
+    try {
+      const response = await instance.get<RealtimeData>(
+        `/api/log-data/realtime/${topicName}`
+      );
       return response;
     } catch (error) {
       errorHandleByCode(error);

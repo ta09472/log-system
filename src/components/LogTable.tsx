@@ -78,8 +78,8 @@ export default function LogTable() {
   // });
 
   return (
-    <div className="flex flex-col gap-3">
-      <div className=" font-bold text-lg flex justify-between">
+    <div className="flex flex-col gap-1">
+      <div className=" flex items-center gap-1 text-2xl font-bold">
         <div>{target?.topicName}</div>
         <Popover
           content={
@@ -108,7 +108,7 @@ export default function LogTable() {
         Displays data starting from {dayjs(current).format(" MMMM DD")} at{" "}
         {dayjs(current).format("HH:mm:ss")}
       </div>
-      <div className="h-[42rem] overflow-auto flex flex-col gap-1">
+      <div className="h-[41rem] overflow-auto flex flex-col gap-1">
         {messages.length === 0 ? (
           <div className=" h-full flex items-center justify-center font-semibold text-lg text-neutral-600">
             No Data
@@ -116,25 +116,38 @@ export default function LogTable() {
         ) : (
           messages.map(v => {
             return (
-              <div
-                className="flex flex-col rounded-md cursor-pointer "
-                key={JSON.stringify(v)}
-                onClick={() => {
-                  setDetail(v);
-                  setOpen(true);
-                }}
-              >
-                {Object.entries(v ?? {})
-                  .slice(0, 4)
-                  .map(([key, value]) => {
-                    return (
-                      <div>
-                        {key.charAt(0).toUpperCase() + key.slice(1)}: {value}
-                      </div>
-                    );
-                  })}
+              <>
+                <div
+                  className="flex flex-col rounded-md cursor-pointer "
+                  key={JSON.stringify(v)}
+                  onClick={() => {
+                    setDetail(v);
+                    setOpen(true);
+                  }}
+                >
+                  {Object.entries(v ?? {})
+                    .slice(0, 4)
+                    .map(([key, value]) => {
+                      return (
+                        <div className="flex flex-col gap-2" key={key}>
+                          {key === "timestamp" ? (
+                            <div className="text-neutral-500 pt-2 self-end">
+                              {dayjs(value).format(
+                                "MMMM DD, YYYY [at] h:mm:ss A"
+                              )}
+                            </div>
+                          ) : (
+                            <div>
+                              {key.charAt(0).toUpperCase() + key.slice(1)}:{" "}
+                              {value}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                </div>
                 <Divider className=" my-2 p-0" />
-              </div>
+              </>
             );
           })
         )}

@@ -38,3 +38,17 @@
   transition: none !important;
   animation: none !important;
 } */
+
+/* CSS */
+.ant-dropdown {
+  transform: translateY(-1020px); /* 초기 위치를 100px 위로 이동 */
+  opacity: 0; /* 처음엔 투명하게 설정 */
+  transition:
+    transform 0.1s ease,
+    opacity 0.1s ease; /* 위치와 투명도 변화에 애니메이션 적용 */
+}
+
+.ant-dropdown {
+  transform: translateY(0); /* 위치를 정상으로 복구 */
+  opacity: 1; /* 완전히 보이도록 설정 */
+}

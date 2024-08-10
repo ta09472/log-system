@@ -9,3 +9,16 @@ export type Aggregation = {
     },
   ];
 };
+
+export type RealtimeData = {
+  topicName: string;
+  result: {
+    settingName: string;
+    data: [
+      {
+        timestamp: number;
+        count: number;
+      },
+    ];
+  }[];
+};
