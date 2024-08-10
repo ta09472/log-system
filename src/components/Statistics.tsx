@@ -15,7 +15,7 @@ import {
   Input,
   MenuProps,
   Modal,
-  Popover,
+  Popover as AntdPop,
   Select,
   Spin,
   Switch,
@@ -26,6 +26,7 @@ import api from "../api";
 import { useState } from "react";
 import "../override.css";
 import { Aggregation } from "../schema/aggregation";
+import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
 
 const data1 = [
   { x: "2020-01-01", y: 50 },
@@ -141,7 +142,7 @@ export default function Statistics() {
       <div className="text-2xl font-bold flex items-center justify-between">
         <div className=" flex items-center gap-2">
           <div>Aggregation Results</div>
-          <Popover
+          <AntdPop
             content={
               <div className=" text-xs text-neutral-500">
                 This shows the trends in data for the hour leading up to the
@@ -163,7 +164,7 @@ export default function Statistics() {
                 d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z"
               />
             </svg>
-          </Popover>
+          </AntdPop>
         </div>
         <Button type="text" onClick={() => setOpen(true)}>
           <svg
@@ -285,36 +286,36 @@ export default function Statistics() {
           <div className=" flex flex-col min-h-[30rem]">
             <div className=" flex items-center justify-between">
               <div>Schema Name</div>
-              <div style={{ position: "relative" }}>
-                <Dropdown
-                  menu={{ items }}
-                  trigger={["click"]}
-                  openClassName="slide-down-animation"
-                  rootClassName="slide-down-animation"
-                  overlayClassName="slide-down-animation"
-                  getPopupContainer={
-                    triggerNode => triggerNode
-                    // triggerNode.closest("#target")
-                  }
-                >
-                  <div className=" cursor-pointer" id="target">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="size-5"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z"
-                      />
-                    </svg>
+              <Popover className="relative ">
+                <PopoverButton className=" ">
+                  <div>
+                    <div className=" cursor-pointer" id="target">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="currentColor"
+                        className="size-5"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z"
+                        />
+                      </svg>
+                    </div>
                   </div>
-                </Dropdown>
-              </div>
+                </PopoverButton>
+                <PopoverPanel
+                  anchor="bottom"
+                  className="flex flex-col bg-white p-2 rounded-md"
+                  style={{ zIndex: 10000000000 }}
+                >
+                  <Button>Edit</Button>
+                  <Button danger>Delete</Button>
+                </PopoverPanel>
+              </Popover>
             </div>
             <div className=" flex mt-4">
               <div className="text-neutral-500 basis-4/12 flex items-center">
