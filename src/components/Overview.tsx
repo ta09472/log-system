@@ -7,6 +7,12 @@ import "../override.css";
 import Description from "./Description";
 import useWebSocket from "../hook/useWebSocket";
 import WorkspaceEditModal from "./WorkspaceEditModal";
+import {
+  getPeakTimes,
+  mergeArraysBySettingName,
+  transformData,
+} from "../util/format";
+import dayjs from "dayjs";
 
 export default function Overview() {
   const [searchParams] = useSearchParams();
@@ -21,11 +27,24 @@ export default function Overview() {
 
   const target = data?.data.find(datum => datum.id.toString() === workspaceId);
 
-  const { message: raw } = useWebSocket({
-    topicName: target?.topicName ?? "",
-    searchType: "raw",
+  const { data: realTimeData } = useQuery({
+    queryKey: ["realtime", target?.topicName],
+    queryFn: () => api.aggregation.getRealtimeData(target?.topicName ?? ""),
   });
 
+  const { message: agg } = useWebSocket({
+    topicName: target?.topicName ?? "",
+    searchType: "agg",
+  });
+
+  const mergedData = mergeArraysBySettingName({
+    arr1: realTimeData?.data.result,
+    arr2: agg.result,
+  });
+
+  const lineData = transformData(mergedData);
+
+  console.log(getPeakTimes(mergedData));
   return (
     <div className="flex flex-col gap-3 h-full">
       <Card bordered={false} className="flex-col">
@@ -90,6 +109,52 @@ export default function Overview() {
 
       <Card bordered={false} className="flex-1">
         <div className="font-bold text-2xl">Overview</div>
+        <div className=" text-neutral-500">
+          Frequency Count (during the last hour)
+        </div>
+        <div className=" flex flex-col gap-2 mt-4">
+          {lineData
+            .sort((a, b) => b.data.length - a.data.length)
+            .map(v => {
+              return (
+                <div className=" flex justify-between items-center">
+                  <div className=" text-md">
+                    {v.settingName.toLocaleUpperCase()}
+                  </div>
+                  <div className="">{v.data.length}</div>
+                </div>
+              );
+            })}
+        </div>
+        <Divider />
+        <div className=" text-neutral-500 mt-4">
+          Peak Frequency (during the last hour)
+        </div>
+        <div className=" flex mt-4 gap-2">
+          <div className="text-neutral-500 basis-4/12 flex items-center text-sm">
+            Name
+          </div>
+          <div className="text-neutral-500 basis-6/12 flex items-center text-sm">
+            Time
+          </div>
+          <div className="text-neutral-500 basis-2/12 flex items-center text-sm">
+            Count
+          </div>
+        </div>
+        {getPeakTimes(mergedData).map(v => {
+          return (
+            <div className=" flex mt-4 gap-2">
+              <div className="basis-4/12 flex items-center">
+                {v?.settingName?.toLocaleUpperCase()}
+              </div>
+              <div className="basis-6/12 flex items-center">
+                {dayjs(v.peak.timestamp ?? "").format("HH:mm:ss A")}
+              </div>
+              <div className="basis-2/12 flex items-center">{v.peak.count}</div>
+            </div>
+          );
+        })}
+        <Divider />
       </Card>
 
       <WorkspaceEditModal open={open} onClose={() => setOpen(false)} />
