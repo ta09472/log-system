@@ -30,10 +30,11 @@ export default function WorkspaceEditModal({ open, onClose }: Props) {
   });
   const target = data?.data.find(datum => datum.id.toString() === workspaceId);
 
-  const { mutate: editTopic, isLoading } = useMutation({
+  const { mutateAsync: editTopic, isLoading } = useMutation({
     mutationFn: api.topic.editTopic,
     onSuccess: () => {
       queryClient.invalidateQueries(["dashboard"]);
+      onClose();
     },
   });
 
@@ -61,7 +62,6 @@ export default function WorkspaceEditModal({ open, onClose }: Props) {
     if (!params) return;
 
     editTopic(params as PutTopicParams);
-    onClose();
   };
 
   return (
@@ -126,8 +126,8 @@ export default function WorkspaceEditModal({ open, onClose }: Props) {
 
                   if (!isNotBlank) {
                     messageApi.open({
-                      type: "error",
-                      content: "완성되지 않은 데이터 필드가 있습니다.",
+                      type: "warning",
+                      content: "Some data fields are incomplete.",
                     });
                     ref?.current?.focus();
                     return;

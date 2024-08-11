@@ -39,9 +39,9 @@ export const aggregation = {
     }
   },
 
-  deleteCondition: async (id: number) => {
+  deleteSetting: async (id: number) => {
     try {
-      const response = await instance.delete<[]>(`/api/aggregation/list/${id}`);
+      const response = await instance.delete<[]>(`/api/aggregation/${id}`);
       return response;
     } catch (error) {
       errorHandleByCode(error);

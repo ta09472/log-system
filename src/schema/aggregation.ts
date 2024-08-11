@@ -1,4 +1,5 @@
 export type Aggregation = {
+  id: number;
   topicName: string;
   settingName: string;
   condition: [
