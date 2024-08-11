@@ -6,7 +6,7 @@ import {
   XYChart,
 } from "@visx/xychart";
 import { Button, Card, Divider, Popover, Spin } from "antd";
-import { useMutation, useQuery } from "react-query";
+import { useQuery } from "react-query";
 import { useSearchParams } from "react-router-dom";
 import api from "../api";
 import { useState } from "react";
@@ -22,9 +22,9 @@ const data1 = [
 ];
 
 const data2 = [
-  { x: "2020-01-01", y: 30 },
-  { x: "2020-01-02", y: 40 },
-  { x: "2020-01-03", y: 80 },
+  { x: "2020-01-01", y: 20 },
+  { x: "2020-01-02", y: 20 },
+  { x: "2020-01-03", y: 20 },
 ];
 
 const accessors = {
@@ -32,25 +32,12 @@ const accessors = {
   yAccessor: d => d.y,
 };
 
-const initialForm: Aggregation = {
-  topicName: "",
-  settingName: "",
-  condition: [
-    {
-      fieldName: "",
-      keyword: "",
-      equal: true,
-    },
-  ],
-};
 export default function Statistics() {
   const [searchParams] = useSearchParams();
   const workspaceId = searchParams.get("workspace") ?? "";
 
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState<undefined | Aggregation[]>();
-
-  const { mutate } = useMutation(api.aggregation.createCondition);
 
   const { data: topics } = useQuery({
     queryKey: ["dashboard"],
@@ -74,31 +61,13 @@ export default function Statistics() {
     queryFn: () => api.aggregation.getRealtimeData(target?.topicName ?? ""),
   });
 
-  // console.log(realTimeData?.data);
+  console.log(realTimeData?.data.result);
 
   const isExist = aggregationCondition?.data.length === 0;
 
   const onChange = (v: Aggregation[]) => {
     setForm(v);
   };
-
-  // const options = data?.data.map(v => ({
-  //   label: v.topicName,
-  //   value: v.topicName,
-  // }));
-
-  // form 이렇게 생김
-  // {
-  //   "topicName": "string",
-  //   "settingName": "string",
-  //   "condition": [
-  //     {
-  //       "fieldName": "string",
-  //       "keyword": "string",
-  //       "equal": true
-  //     }
-  //   ]
-  // }
 
   if (isLoading)
     return (

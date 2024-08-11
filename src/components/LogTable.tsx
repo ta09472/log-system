@@ -53,29 +53,9 @@ export default function LogTable() {
   useEffect(() => {
     // URL 파라미터가 변경될 때 messages 초기화
     setMessages([]);
-  }, [location.search]); // location.search는 URL의 쿼리 파라미터를 나타냄
+  }, [location.search]);
 
-  // const { data, ...rest } = raw;
-
-  // const transformedObject = {
-  //   ...rest, // 나머지 속성들 복사
-  //   ...data, // 'data' 객체의 속성들 병합
-  // };
-
-  // const transformedArray = raw?.data?.map(item => {
-  //   const { data, ...rest } = item;
-  //   return {
-  //     ...rest,
-  //     ...data,
-  //   };
-  // });
-  // const columns = Object.keys(transformedObject ?? {}).map(key => {
-  //   return {
-  //     title: key.charAt(0).toUpperCase() + key.slice(1),
-  //     dataIndex: key,
-  //     key: key,
-  //   };
-  // });
+  console.log(messages);
 
   return (
     <div className="flex flex-col gap-1">

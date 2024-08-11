@@ -50,6 +50,16 @@ export default function AggregationEditModal({
     },
   });
 
+  const { mutateAsync: createCondition } = useMutation(
+    api.aggregation.createCondition,
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["aggCondition", target?.topicName]);
+        messageApi.success("Changes have been successfully saved.");
+      },
+    }
+  );
+
   const { data: aggregationCondition } = useQuery({
     queryKey: ["aggCondition", target?.topicName],
     queryFn: () => api.aggregation.getCondition(target?.topicName ?? ""),
@@ -62,13 +72,18 @@ export default function AggregationEditModal({
     value: fieldName,
   }));
 
-  const isValid = !form?.every(v =>
-    v.condition?.every(d => d.fieldName !== "" && d.keyword !== "")
+  const isValid = !(
+    form?.every(g => g.settingName.trim() !== "") &&
+    form?.every(v =>
+      v.condition?.every(
+        d => d.fieldName.trim() !== "" && d.keyword.trim() !== ""
+      )
+    )
   );
 
   const initialForm: Aggregation = {
     id: (aggregationCondition?.data.at(-1)?.id ?? 0) + 1,
-    topicName: "",
+    topicName: target?.topicName ?? "",
     settingName: "",
     condition: [
       {
@@ -122,6 +137,19 @@ export default function AggregationEditModal({
           removeTarget?.forEach(a => {
             mutateAsync(a);
           });
+
+          const createTarget = form?.filter(
+            item =>
+              !new Set(aggregationCondition?.data?.map(item => item.id)).has(
+                item.id
+              )
+          );
+
+          createTarget?.forEach(a => {
+            createCondition(a);
+          });
+
+          // 세팅 생성
 
           onClose();
         }}
@@ -229,7 +257,8 @@ export default function AggregationEditModal({
                         >
                           {/* PUT 메소드 생기면 Edit 버튼 기능 활성화 */}
                           <Button
-                            disabled={!!aggregationCondition?.data.at(formId)}
+                            // disabled={!!aggregationCondition?.data.at(formId)}
+                            disabled
                             size="small"
                             type="text"
                             className="flex justify-start"
@@ -298,6 +327,38 @@ export default function AggregationEditModal({
                       type="text"
                       className=" bg-neutral-100"
                       disabled={!!aggregationCondition?.data.at(formId)}
+                      onClick={() => {
+                        const isNotValid = form.every(t =>
+                          t.condition.every(
+                            o =>
+                              o.fieldName.trim() !== "" &&
+                              o.keyword.trim() !== ""
+                          )
+                        );
+
+                        if (isNotValid) {
+                          const newForm = form.map(
+                            item =>
+                              item.id === v.id // 특정 item을 찾는 조건
+                                ? {
+                                    ...item,
+                                    condition: [
+                                      ...item.condition,
+                                      {
+                                        fieldName: "",
+                                        keyword: "",
+                                        equal: true,
+                                      },
+                                    ],
+                                  }
+                                : item // id가 맞지 않는 경우 원래 item 유지
+                          );
+
+                          onChange(newForm as Aggregation[]); // 상태를 업데이트
+                          return;
+                        }
+                        messageApi.warning("Some data fields are incomplete.");
+                      }}
                       icon={
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -387,11 +448,7 @@ export default function AggregationEditModal({
                     </div>
                     <div className="text-neutral-500 basis-4/12 flex items-center">
                       <Switch
-                        disabled={
-                          !!aggregationCondition?.data
-                            .at(formId)
-                            ?.condition.at(index)?.equal
-                        }
+                        disabled={!!aggregationCondition?.data.at(formId)}
                         value={val.equal}
                         checkedChildren="Exactly"
                         unCheckedChildren="Contains"
@@ -420,6 +477,23 @@ export default function AggregationEditModal({
                         type="text"
                         className=" w-full"
                         disabled={!!aggregationCondition?.data.at(formId)}
+                        onClick={() => {
+                          const newForm = form.map(
+                            item =>
+                              item.id === v.id // 특정 item을 찾는 조건
+                                ? {
+                                    ...item,
+                                    condition:
+                                      item.condition.length === 1
+                                        ? item.condition // 배열에 요소가 하나만 있을 때는 삭제하지 않고 그대로 유지
+                                        : item.condition.filter(
+                                            (_, uid) => uid !== index
+                                          ), // 그 외의 경우에는 필터링
+                                  }
+                                : item // id가 맞지 않는 경우 원래 item 유지
+                          );
+                          onChange(newForm as Aggregation[]); // 상태를 업데이트
+                        }}
                         icon={
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
