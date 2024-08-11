@@ -107,21 +107,29 @@ export default function Overview() {
         </div>
       </Card>
 
-      <Card bordered={false} className="flex-1">
+      <Card bordered={false} className="flex-1  max-h-[37.3rem]">
         <div className="font-bold text-2xl">Overview</div>
         <div className=" text-neutral-500">
           Frequency Count (during the last hour)
         </div>
-        <div className=" flex flex-col gap-2 mt-4">
+        <div className=" flex mt-4 gap-2">
+          <div className="text-neutral-500 basis-10/12 flex items-center text-sm">
+            Name
+          </div>
+          <div className="text-neutral-500 basis-2/12 flex items-center text-sm">
+            Count
+          </div>
+        </div>
+        <div className=" flex flex-col gap-2 mt-4 overflow-scroll  max-h-[10rem]">
           {lineData
             .sort((a, b) => b.data.length - a.data.length)
             .map(v => {
               return (
                 <div className=" flex justify-between items-center">
-                  <div className=" text-md">
+                  <div className=" text-md basis-10/12">
                     {v.settingName.toLocaleUpperCase()}
                   </div>
-                  <div className="">{v.data.length}</div>
+                  <div className=" text-md basis-2/12">{v.data.length}</div>
                 </div>
               );
             })}
@@ -141,20 +149,23 @@ export default function Overview() {
             Count
           </div>
         </div>
-        {getPeakTimes(mergedData).map(v => {
-          return (
-            <div className=" flex mt-4 gap-2">
-              <div className="basis-4/12 flex items-center">
-                {v?.settingName?.toLocaleUpperCase()}
+        <div className=" overflow-scroll  max-h-[11rem]">
+          {getPeakTimes(mergedData).map(v => {
+            return (
+              <div className=" flex mt-4 gap-2">
+                <div className="basis-4/12 flex items-center">
+                  {v?.settingName?.toLocaleUpperCase()}
+                </div>
+                <div className="basis-6/12 flex items-center">
+                  {dayjs(v.peak.timestamp ?? "").format("HH:mm:ss A")}
+                </div>
+                <div className="basis-2/12 flex items-center">
+                  {v.peak.count}
+                </div>
               </div>
-              <div className="basis-6/12 flex items-center">
-                {dayjs(v.peak.timestamp ?? "").format("HH:mm:ss A")}
-              </div>
-              <div className="basis-2/12 flex items-center">{v.peak.count}</div>
-            </div>
-          );
-        })}
-        <Divider />
+            );
+          })}
+        </div>
       </Card>
 
       <WorkspaceEditModal open={open} onClose={() => setOpen(false)} />

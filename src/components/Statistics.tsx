@@ -19,11 +19,7 @@ import { Aggregation } from "../schema/aggregation";
 import AggregationEditModal from "./AggregationEditModal";
 import useWebSocket from "../hook/useWebSocket";
 
-import {
-  getPeakTimes,
-  mergeArraysBySettingName,
-  transformData,
-} from "../util/format";
+import { mergeArraysBySettingName, transformData } from "../util/format";
 
 const colorPallet = [
   "#ff4b4b",
