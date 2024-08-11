@@ -46,6 +46,8 @@ export default function AggregationEditModal({
   const { mutateAsync } = useMutation(api.aggregation.deleteSetting, {
     onSuccess: () => {
       queryClient.invalidateQueries(["aggCondition", target?.topicName]);
+      queryClient.invalidateQueries(["realtime", target?.topicName]);
+
       messageApi.success("Changes have been successfully saved.");
     },
   });
@@ -55,6 +57,7 @@ export default function AggregationEditModal({
     {
       onSuccess: () => {
         queryClient.invalidateQueries(["aggCondition", target?.topicName]);
+        queryClient.invalidateQueries(["realtime", target?.topicName]);
         messageApi.success("Changes have been successfully saved.");
       },
     }

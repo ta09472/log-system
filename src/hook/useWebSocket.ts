@@ -7,7 +7,8 @@ interface Props {
 }
 
 export default function useWebSocket({ topicName, searchType }: Props) {
-  const [message, setMessage] = useState<unknown>({});
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [message, setMessage] = useState<any>({});
 
   const client = new Client({
     brokerURL: `ws://211.225.158.78:8080/ws`, // 기본 WebSocket URL

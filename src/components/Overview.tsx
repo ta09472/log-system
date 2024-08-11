@@ -26,11 +26,6 @@ export default function Overview() {
     searchType: "raw",
   });
 
-  const { message: agg } = useWebSocket({
-    topicName: target?.topicName ?? "",
-    searchType: "agg",
-  });
-
   return (
     <div className="flex flex-col gap-3 h-full">
       <Card bordered={false} className="flex-col">
@@ -94,7 +89,7 @@ export default function Overview() {
       </Card>
 
       <Card bordered={false} className="flex-1">
-        hello
+        <div className="font-bold text-2xl">Overview</div>
       </Card>
 
       <WorkspaceEditModal open={open} onClose={() => setOpen(false)} />

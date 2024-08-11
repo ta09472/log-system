@@ -5,6 +5,9 @@ import {
   AnimatedLineSeries,
   XYChart,
 } from "@visx/xychart";
+import { LegendItem, LegendLabel, LegendOrdinal } from "@visx/legend";
+import { scaleOrdinal } from "@visx/scale";
+
 import { Button, Card, Divider, Popover, Spin } from "antd";
 import { useQuery } from "react-query";
 import { useSearchParams } from "react-router-dom";
@@ -14,22 +17,80 @@ import "../override.css";
 import { Aggregation } from "../schema/aggregation";
 
 import AggregationEditModal from "./AggregationEditModal";
+import useWebSocket from "../hook/useWebSocket";
+import dayjs from "dayjs";
 
-const data1 = [
-  { x: "2020-01-01", y: 50 },
-  { x: "2020-01-02", y: 10 },
-  { x: "2020-01-03", y: 20 },
-];
-
-const data2 = [
-  { x: "2020-01-01", y: 20 },
-  { x: "2020-01-02", y: 20 },
-  { x: "2020-01-03", y: 20 },
+const colorPallet = [
+  "#ff4b4b",
+  "#ffc12f",
+  "#ffe437",
+  "#a1ff42",
+  "#3cff2e",
+  "#39ff6a",
+  "#3affd4",
+  "#185dff",
+  "#b547ff",
+  "#000000",
 ];
 
 const accessors = {
   xAccessor: d => d.x,
   yAccessor: d => d.y,
+};
+
+const colorAccessor = id => {
+  return colorPallet.at(id) || "#000000"; // 색상이 정의되지 않은 경우 기본 색상으로 검정색을 사용
+};
+
+const mergeArraysBySettingName = ({
+  arr1 = [],
+  arr2 = [],
+}: {
+  arr1:
+    | { settingName: string; data: { timestamp: number; count: number }[] }[]
+    | undefined;
+  arr2:
+    | { settingName: string; data: { timestamp: number; count: number }[] }[]
+    | undefined;
+}) => {
+  if (!arr1) return [];
+  if (!arr2) return arr1;
+
+  // 배열을 settingName을 키로 하는 객체로 변환
+  const map1 = new Map<string, { timestamp: number; count: number }[]>();
+  arr1.forEach(item => {
+    map1.set(item.settingName, item.data);
+  });
+
+  // arr2를 필터링하여 arr1에 존재하는 settingName만 포함
+  const filteredArr2 = arr2.filter(item => map1.has(item.settingName));
+
+  // arr2의 필터링된 데이터와 arr1의 데이터를 병합
+  filteredArr2.forEach(item => {
+    if (map1.has(item.settingName)) {
+      // 기존 데이터에 병합
+      const existingData = map1.get(item.settingName);
+      map1.set(item.settingName, [...existingData, ...item.data]);
+    }
+  });
+
+  // 맵을 배열로 변환
+  return Array.from(map1.entries()).map(([settingName, data]) => ({
+    settingName,
+    data,
+  }));
+};
+
+const transformData = (
+  data
+): { settingName: string; data: { x: string; y: number }[] }[] => {
+  return data.map(setting => ({
+    settingName: setting.settingName,
+    data: setting.data.map(item => ({
+      x: dayjs(item.timestamp).format("HH:mm:ss"), // 날짜 문자열 형식으로 변환
+      y: item.count,
+    })),
+  }));
 };
 
 export default function Statistics() {
@@ -61,7 +122,21 @@ export default function Statistics() {
     queryFn: () => api.aggregation.getRealtimeData(target?.topicName ?? ""),
   });
 
-  console.log(realTimeData?.data.result);
+  const { message: agg } = useWebSocket({
+    topicName: target?.topicName ?? "",
+    searchType: "agg",
+  });
+
+  const mergedData = mergeArraysBySettingName({
+    arr1: realTimeData?.data.result,
+    arr2: agg.result,
+  });
+
+  const lineData = transformData(mergedData);
+  const colorScale = scaleOrdinal({
+    domain: lineData.map(v => v.settingName),
+    range: colorPallet,
+  });
 
   const isExist = aggregationCondition?.data.length === 0;
 
@@ -135,44 +210,96 @@ export default function Statistics() {
         <>
           <Divider />
           <div className=" font-bold text-lg">
-            시간에 따른 로그 발생(트렌드)
+            Trend from last hour's log data
           </div>
           <div className="  min-h-[250px]">
+            <div className=" mt-2">
+              <LegendOrdinal
+                scale={colorScale}
+                labelFormat={label => `${label.toUpperCase()}`}
+              >
+                {labels => (
+                  <div style={{ display: "flex", flexDirection: "row" }}>
+                    {labels.map((label, i) => (
+                      <LegendItem key={`legend-quantile-${i}`} margin="0 5px">
+                        <svg width={10} height={10}>
+                          <rect fill={label.value} width={10} height={10} />
+                        </svg>
+                        <LegendLabel align="left" margin="0 0 0 4px">
+                          {label.text}
+                        </LegendLabel>
+                      </LegendItem>
+                    ))}
+                  </div>
+                )}
+              </LegendOrdinal>
+            </div>
             <XYChart
               height={250}
               xScale={{ type: "band" }}
               yScale={{ type: "linear" }}
             >
               <AnimatedAxis orientation="bottom" />
+              <AnimatedAxis orientation="left" />
+
               <AnimatedGrid columns={false} numTicks={4} />
-              <AnimatedLineSeries
-                dataKey="Line 1"
-                data={data1}
-                {...accessors}
-              />
-              <AnimatedLineSeries
-                dataKey="Line 2"
-                data={data2}
-                {...accessors}
-              />
+              {lineData.map((v, id) => {
+                return (
+                  <AnimatedLineSeries
+                    // color={colorScale(v.settingName)}
+                    colorAccessor={() => colorAccessor(id)}
+                    dataKey={v.settingName}
+                    data={v.data}
+                    {...accessors}
+                  />
+                );
+              })}
             </XYChart>
           </div>
           <Divider />
-          <div className=" font-bold text-lg">로그 발생 횟수(갯수)</div>
+          <div className=" font-bold text-lg">
+            Log Occurrences over the past hour
+          </div>
           <div className="  min-h-[250px]">
+            <div className=" mt-2">
+              <LegendOrdinal
+                scale={colorScale}
+                labelFormat={label => `${label.toUpperCase()}`}
+              >
+                {labels => (
+                  <div style={{ display: "flex", flexDirection: "row" }}>
+                    {labels.map((label, i) => (
+                      <LegendItem key={`legend-quantile-${i}`} margin="0 5px">
+                        <svg width={10} height={10}>
+                          <rect fill={label.value} width={10} height={10} />
+                        </svg>
+                        <LegendLabel align="left" margin="0 0 0 4px">
+                          {label.text}
+                        </LegendLabel>
+                      </LegendItem>
+                    ))}
+                  </div>
+                )}
+              </LegendOrdinal>
+            </div>
             <XYChart
               height={250}
               xScale={{ type: "band" }}
               yScale={{ type: "linear" }}
             >
+              <AnimatedAxis orientation="left" />
               <AnimatedAxis orientation="bottom" />
               <AnimatedGrid columns={false} numTicks={4} />
-              <AnimatedBarSeries
-                dataKey="Line 1"
-                data={data1}
-                {...accessors}
-                colorAccessor={d => "#3e3e3e"}
-              />
+              {lineData.map((v, id) => {
+                return (
+                  <AnimatedBarSeries
+                    colorAccessor={() => colorAccessor(id)}
+                    dataKey={v.settingName}
+                    data={v.data}
+                    {...accessors}
+                  />
+                );
+              })}
             </XYChart>
           </div>
         </>

@@ -13,7 +13,8 @@ export default function LogTable() {
 
   const [current] = useState(dayjs(new Date()).format(" MMMM DD, HH:mm:ss"));
 
-  const [messages, setMessages] = useState<unknown[]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [messages, setMessages] = useState<any[]>([]);
   const [open, setOpen] = useState(false);
   const [detail, setDetail] = useState();
 
@@ -29,10 +30,10 @@ export default function LogTable() {
     searchType: "raw",
   });
 
-  const { message: agg } = useWebSocket({
-    topicName: target?.topicName ?? "",
-    searchType: "agg",
-  });
+  // const { message: agg } = useWebSocket({
+  //   topicName: target?.topicName ?? "",
+  //   searchType: "agg",
+  // });
 
   useEffect(() => {
     if (!raw.data) return;
@@ -54,8 +55,6 @@ export default function LogTable() {
     // URL 파라미터가 변경될 때 messages 초기화
     setMessages([]);
   }, [location.search]);
-
-  console.log(messages);
 
   return (
     <div className="flex flex-col gap-1">
@@ -112,14 +111,14 @@ export default function LogTable() {
                         <div className="flex flex-col gap-2" key={key}>
                           {key === "timestamp" ? (
                             <div className="text-neutral-500 pt-2 self-end">
-                              {dayjs(value).format(
+                              {dayjs(value as string).format(
                                 "MMMM DD, YYYY [at] h:mm:ss A"
                               )}
                             </div>
                           ) : (
                             <div>
                               {key.charAt(0).toUpperCase() + key.slice(1)}:{" "}
-                              {value}
+                              {value as string}
                             </div>
                           )}
                         </div>
@@ -144,11 +143,14 @@ export default function LogTable() {
             <div className="flex flex-col gap-2" key={key}>
               {key === "timestamp" ? (
                 <div className="text-neutral-500 pt-2 self-end">
-                  {dayjs(value).format("MMMM DD, YYYY [at] h:mm:ss A")}
+                  {dayjs(value as string).format(
+                    "MMMM DD, YYYY [at] h:mm:ss A"
+                  )}
                 </div>
               ) : (
                 <div>
-                  {key.charAt(0).toUpperCase() + key.slice(1)}: {value}
+                  {key.charAt(0).toUpperCase() + key.slice(1)}:{" "}
+                  {value as string}
                 </div>
               )}
             </div>

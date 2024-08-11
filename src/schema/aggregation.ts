@@ -15,11 +15,9 @@ export type RealtimeData = {
   topicName: string;
   result: {
     settingName: string;
-    data: [
-      {
-        timestamp: number;
-        count: number;
-      },
-    ];
+    data: {
+      timestamp: number;
+      count: number;
+    }[];
   }[];
 };
