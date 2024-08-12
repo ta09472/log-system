@@ -249,6 +249,9 @@ export default function DropdownContent({ ref, onClose }: Props) {
     !form.condition?.some(v => v.keyword === "" || v.fieldName === "")
   );
 
+  console.log("form", form);
+  console.log("aggForm", aggForm);
+
   return (
     <div className="px-2 w-full rounded-md flex-col shadow-md">
       <div className="flex justify-between gap-4 w-full items-center pt-1">
