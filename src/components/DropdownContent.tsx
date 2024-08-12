@@ -241,7 +241,6 @@ export default function DropdownContent({ ref, onClose }: Props) {
         </Button>
       </div>
       <div className="p-3 flex-col">
-        <SearchHistory onClose={onClose} />
         <div className="flex flex-col gap-2">
           <div className="flex flex-col gap-2 ">
             <div className="font-semibold text-lg">Topic</div>
@@ -297,7 +296,7 @@ export default function DropdownContent({ ref, onClose }: Props) {
           ) : (
             <AggregationForm form={form} />
           )}
-
+          <SearchHistory onClose={onClose} />
           <div className=" flex gap-2 mt-2">
             <Button
               block
