@@ -20,6 +20,7 @@ import SearchHistory from "./SearchHistory";
 import RawForm from "./RawForm";
 import AggregationForm from "./AggregationForm";
 import disabled7DaysDate from "../util/dateRange";
+import { LogAggregationParams } from "../schema/aggregation";
 
 interface Props {
   ref: LegacyRef<InputRef> | undefined;
@@ -34,8 +35,23 @@ const initialForm: RawParams = {
   condition: [{ fieldName: "", keyword: "", equal: true }],
 };
 
+type AggForm = LogAggregationParams & { searchType: "raw" | "statics" };
+const aggInitialForm: AggForm = {
+  topicName: "",
+  searchType: "statics",
+  from: dayjs().format(""),
+  to: dayjs().format(""),
+  searchSettings: [
+    {
+      settingName: "",
+      conditionList: [{ fieldName: "", keyword: "", equal: true }],
+    },
+  ],
+};
+
 export default function DropdownContent({ ref, onClose }: Props) {
   const [form, setForm] = useState<RawParams>(initialForm);
+  const [aggForm, setAggForm] = useState<AggForm>(aggInitialForm);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { pathname, search } = useLocation();
@@ -78,8 +94,25 @@ export default function DropdownContent({ ref, onClose }: Props) {
         condition,
         searchType: searchType as "raw" | "statics",
       });
+
+      setAggForm({
+        to: to ?? "",
+        topicName: topicName ?? "",
+        searchType: searchType as "raw" | "statics",
+        from: from ?? "",
+        // URL에서 가져오기
+        searchSettings: [
+          {
+            settingName: "",
+            conditionList: [{ fieldName: "", keyword: "", equal: true }],
+          },
+        ],
+      });
     }
   }, [search]);
+
+  console.log(form);
+  console.log(aggForm);
 
   const onTopicChange = (value: string) => {
     setForm(prev => {
@@ -87,6 +120,13 @@ export default function DropdownContent({ ref, onClose }: Props) {
         ...prev,
         topicName: value,
       } as RawParams;
+    });
+
+    setAggForm(prev => {
+      return {
+        ...prev,
+        topicName: value,
+      };
     });
   };
 
@@ -123,6 +163,13 @@ export default function DropdownContent({ ref, onClose }: Props) {
         searchType: v,
       } as RawParams;
     });
+
+    setAggForm(prev => {
+      return {
+        ...prev,
+        searchType: v,
+      };
+    });
   };
 
   const onCriteriaChange = (v: boolean, id: number) => {
@@ -147,6 +194,14 @@ export default function DropdownContent({ ref, onClose }: Props) {
         from: dayjs(v[0]).format("YYYY-MM-DD HH:mm:ss"),
         to: dayjs(v[1]).format("YYYY-MM-DD HH:mm:ss"),
       } as RawParams;
+    });
+
+    setAggForm(prev => {
+      return {
+        ...prev,
+        from: dayjs(v[0]).format("YYYY-MM-DD HH:mm:ss"),
+        to: dayjs(v[1]).format("YYYY-MM-DD HH:mm:ss"),
+      };
     });
   };
 
@@ -294,7 +349,7 @@ export default function DropdownContent({ ref, onClose }: Props) {
               removeCondition={removeCondition}
             />
           ) : (
-            <AggregationForm form={form} />
+            <AggregationForm form={aggForm} setForm={setAggForm} />
           )}
           <SearchHistory onClose={onClose} />
           <div className=" flex gap-2 mt-2">

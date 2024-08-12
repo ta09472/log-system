@@ -34,8 +34,8 @@ export type LogAggregationResponse = {
 };
 
 export type LogAggregationParams = {
-  from: number;
-  to: number;
+  from: string;
+  to: string;
   topicName: string;
   searchSettings: {
     settingName: string;
