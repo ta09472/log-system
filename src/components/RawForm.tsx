@@ -1,8 +1,5 @@
-import { Button, DatePicker, Divider, Input, Select, Switch } from "antd";
-import dayjs from "dayjs";
-import disabled7DaysDate from "../util/dateRange";
+import { Button, Divider, Input, Select, Switch } from "antd";
 import { RawParams } from "../schema/raw";
-import { NoUndefinedRangeValueType } from "rc-picker/lib/PickerInput/RangePicker";
 
 interface Props {
   form: RawParams;
@@ -12,7 +9,6 @@ interface Props {
         value: string;
       }[]
     | undefined;
-  onDateChange: (v: NoUndefinedRangeValueType<dayjs.Dayjs> | null) => void;
   addCondition: () => void;
   onFieldChange: (v: string, id: number) => void;
   onKeywordChange: (v: string, id: number) => void;
@@ -22,7 +18,6 @@ interface Props {
 
 export default function RawForm({
   form,
-  onDateChange,
   addCondition,
   dataFiledOptions,
   onFieldChange,

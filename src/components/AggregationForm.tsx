@@ -1,10 +1,7 @@
-import { useEffect, useState } from "react";
-import { RawParams } from "../schema/raw";
 import { LogAggregationParams } from "../schema/aggregation";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+// import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { Button, Divider, Input, message, Select, Switch } from "antd";
 
-import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
 import api from "../api";
 import { useQuery } from "react-query";
 

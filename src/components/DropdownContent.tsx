@@ -341,7 +341,6 @@ export default function DropdownContent({ ref, onClose }: Props) {
             <RawForm
               form={form}
               dataFiledOptions={dataFiledOptions}
-              onDateChange={onDateChange}
               addCondition={addCondition}
               onFieldChange={onFieldChange}
               onKeywordChange={onKeywordChange}
