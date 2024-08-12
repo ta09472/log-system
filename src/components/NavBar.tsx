@@ -37,7 +37,7 @@ export default function NavBar() {
             Dashboard
           </Button>
 
-          <Button
+          {/* <Button
             type="text"
             size="large"
             className={
@@ -46,7 +46,7 @@ export default function NavBar() {
             onClick={() => navigate("/setting")}
           >
             Setting
-          </Button>
+          </Button> */}
         </div>
 
         <div className="flex items-center basis-1/2">

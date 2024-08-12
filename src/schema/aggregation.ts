@@ -21,3 +21,28 @@ export type RealtimeData = {
     }[];
   }[];
 };
+
+export type LogAggregationResponse = {
+  topicName: string;
+  result: {
+    settingName: string;
+    data: {
+      timestamp: number;
+      count: number;
+    }[];
+  }[];
+};
+
+export type LogAggregationParams = {
+  from: number;
+  to: number;
+  topicName: string;
+  searchSettings: {
+    settingName: string;
+    conditionList: {
+      fieldName: string;
+      keyword: string;
+      equal: true;
+    }[];
+  }[];
+};

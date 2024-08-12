@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   AnimatedAxis,
   AnimatedBarSeries,
@@ -21,7 +22,7 @@ import useWebSocket from "../hook/useWebSocket";
 
 import { mergeArraysBySettingName, transformData } from "../util/format";
 
-const colorPallet = [
+export const colorPallet = [
   "#ff4b4b",
   "#ffc12f",
   "#ffe437",
@@ -35,8 +36,8 @@ const colorPallet = [
 ];
 
 const accessors = {
-  xAccessor: d => d.x,
-  yAccessor: d => d.y,
+  xAccessor: (d: any) => d.x,
+  yAccessor: (d: any) => d.y,
 };
 
 const colorAccessor = (id: number) => {

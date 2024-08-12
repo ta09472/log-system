@@ -1,5 +1,10 @@
 import instance from "../lib/axios";
-import { Aggregation, RealtimeData } from "../schema/aggregation";
+import {
+  Aggregation,
+  LogAggregationParams,
+  LogAggregationResponse,
+  RealtimeData,
+} from "../schema/aggregation";
 import errorHandleByCode from "../util/error";
 
 export const aggregation = {
@@ -52,6 +57,18 @@ export const aggregation = {
     try {
       const response = await instance.get<RealtimeData>(
         `/api/log-data/realtime/${topicName}`
+      );
+      return response;
+    } catch (error) {
+      errorHandleByCode(error);
+    }
+  },
+
+  getAggregationData: async (params: LogAggregationParams) => {
+    try {
+      const response = await instance.post<LogAggregationResponse>(
+        `/api/log-data/aggregation`,
+        params
       );
       return response;
     } catch (error) {

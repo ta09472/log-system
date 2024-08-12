@@ -11,6 +11,7 @@ interface Props {
 }
 
 type Item = RawParams & { id: number };
+
 export default function SearchHistory({ onClose }: Props) {
   const items: Item[] = customLocalStorage.getItem("form");
 
@@ -19,6 +20,17 @@ export default function SearchHistory({ onClose }: Props) {
 
   const deleteItem = (id: number) => {
     customLocalStorage.removeItem("form", id);
+  };
+
+  const map = {
+    raw: {
+      label: "Raw",
+      color: "orange",
+    },
+    statics: {
+      label: "Aggregation",
+      color: "blue",
+    },
   };
 
   if (!items) return null;
@@ -39,11 +51,18 @@ export default function SearchHistory({ onClose }: Props) {
           History Clear
         </Button>
       </div>
-      <div className="flex gap-2 items-center overflow-auto max-w-[40rem] min-h-[6rem]">
+      <div className="flex gap-2 items-center overflow-auto max-w-[52rem] min-h-[6rem]">
         {items.toReversed()?.map(v => (
           <div className=" flex-col flex" key={v.id}>
             <Popover
-              title="Search Condition"
+              title={
+                <div className=" flex items-center gap-2">
+                  <div>Search Condition</div>
+                  <Tag bordered={false} color={map[v.searchType].color}>
+                    {map[v.searchType].label}
+                  </Tag>
+                </div>
+              }
               getPopupContainer={triggerNode =>
                 triggerNode.parentNode as HTMLElement
               }
