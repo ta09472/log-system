@@ -1,4 +1,4 @@
-import { Button, Card, DatePicker, Table } from "antd";
+import { Card, Table } from "antd";
 import { useMutation } from "react-query";
 import { useLocation, useSearchParams } from "react-router-dom";
 import api from "../api";
@@ -17,7 +17,6 @@ import {
 import { colorAccessor, colorPallet } from "../util/color";
 import { LegendItem, LegendLabel, LegendOrdinal } from "@visx/legend";
 import { getDateFormat } from "../util/dateRange";
-import { scaleTime } from "d3-scale";
 import PieChart from "./Pie";
 
 type AggForm = LogAggregationParams & { searchType: "raw" | "statics" };
@@ -36,7 +35,9 @@ const initialForm: AggForm = {
 };
 
 const accessors = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   xAccessor: (d: any) => d.x,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   yAccessor: (d: any) => d.y,
 };
 
@@ -44,6 +45,7 @@ export default function AggregationResult() {
   const [searchParams] = useSearchParams();
   const { search } = useLocation();
   const [id, setId] = useState(0);
+  const [pieTarget, setPieTarget] = useState("");
 
   const topicName = searchParams.get("topicName") ?? initialForm.topicName;
   const from = searchParams.get("start") ?? initialForm.from;
@@ -52,9 +54,7 @@ export default function AggregationResult() {
     JSON.parse(searchParams.get("aggConditions") ?? "") ??
     initialForm.searchSettings;
 
-  const { mutateAsync, isLoading, data } = useMutation(
-    api.aggregation.getAggregationData
-  );
+  const { mutateAsync, data } = useMutation(api.aggregation.getAggregationData);
 
   useEffect(() => {
     mutateAsync({
@@ -101,7 +101,23 @@ export default function AggregationResult() {
   //     return undefined;
   //   }
   // };
-  // const ticks = getTicks();
+  const filteredData = lineData?.map(setting => ({
+    settingName: setting.settingName,
+    data: setting.data.filter(item => item.y !== 0),
+  }));
+
+  const sumData = filteredData?.map(setting => ({
+    settingName: setting.settingName,
+    total: setting.data.reduce((accumulator, currentValue) => {
+      return accumulator + currentValue.y;
+    }, 0),
+  }));
+
+  const pieData = sumData?.map(v => ({ label: v.settingName, value: v.total }));
+
+  const currentTarget = filteredData?.find(v => v.settingName === pieTarget);
+
+  console.log();
 
   const tabPanel: {
     [key: number]: ReactNode;
@@ -223,9 +239,56 @@ export default function AggregationResult() {
             )}
           </LegendOrdinal>
         </div>
-        <div className=" flex justify-around">
-          <PieChart width={250} height={250} />
-          <div>hello</div>
+        <div className=" flex">
+          <div className=" basis-2/3 flex justify-center">
+            <PieChart
+              width={250}
+              height={250}
+              data={pieData}
+              target={pieTarget}
+              setPieTarget={setPieTarget}
+            />
+          </div>
+          <div className=" basis-1/3 flex gap-16 flex-wrap max-h-[10rem] items-center">
+            <div>
+              {currentTarget?.settingName
+                ? currentTarget.settingName.toLocaleUpperCase()
+                : "TOTAL"}
+            </div>
+            <div className=" flex flex-col">
+              <div className=" flex">
+                <div className=" basis-1/2 text-neutral-500">Time</div>
+                <div className=" basis-1/2 text-neutral-500">Count</div>
+              </div>
+              {pieTarget === "" ? (
+                <div className=" max-h-[14rem] min-w-[20rem] flex flex-col gap-3 overflow-scroll">
+                  {filteredData
+                    ?.flatMap(item => item.data)
+                    .map(v => {
+                      return (
+                        <div className=" flex">
+                          <div className=" basis-1/2 text-sm">{v.x}</div>
+                          <div className=" basis-1/2 text-sm">{v.y}</div>
+                        </div>
+                      );
+                    })}
+                </div>
+              ) : (
+                <div className=" overflow-scroll max-h-[14rem] min-w-[20rem] flex flex-col gap-3">
+                  {filteredData
+                    ?.find(f => f.settingName === currentTarget?.settingName)
+                    ?.data.map(s => {
+                      return (
+                        <div className=" flex">
+                          <div className=" basis-1/2 text-sm">{s.x}</div>
+                          <div className=" basis-1/2 text-sm">{s.y}</div>
+                        </div>
+                      );
+                    })}
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     ),

@@ -1,21 +1,19 @@
 import { DatePickerProps } from "antd";
-import relativeTime from "dayjs/plugin/relativeTime";
 import dayjs from "dayjs";
 
 const disabled7DaysDate: DatePickerProps["disabledDate"] = (
   current,
   { from }
 ) => {
-  const today = dayjs().startOf("day"); // 오늘 날짜를 기준으로 설정
+  const now = dayjs(); // 현재 시간을 기준으로 설정
   if (from) {
-    // 7일 이상의 차이 또는 오늘 이후 날짜를 비활성화
-    return current.isAfter(today) || Math.abs(current.diff(from, "days")) >= 7;
+    // 7일 이상의 차이 또는 현재 이후 날짜를 비활성화
+    return current.isAfter(now) || Math.abs(current.diff(from, "days")) >= 7;
   }
 
-  // 오늘 이후 날짜를 비활성화
-  return current.isAfter(today);
+  // 현재 이후 날짜를 비활성화
+  return current.isAfter(now);
 };
-
 export default disabled7DaysDate;
 
 export function getDateFormat(date1, date2) {
