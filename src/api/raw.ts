@@ -3,8 +3,10 @@ import instance from "../lib/axios";
 import { Raw, RawParams } from "../schema/raw";
 import errorHandleByCode from "../util/error";
 
+type Params = RawParams & { pageSize: number; pageNo: number };
+
 export const raw = {
-  getLogData: async (params: RawParams) => {
+  getLogData: async (params: Params) => {
     const newObj = _.omit(params, "searchType");
     const convertedParams = {
       ...newObj,

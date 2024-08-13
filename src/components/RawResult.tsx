@@ -52,6 +52,7 @@ export default function RawResult() {
     };
   });
 
+  // 페이지네이션 구현해야됨
   useEffect(() => {
     mutate({
       topicName: topicName,
@@ -59,6 +60,8 @@ export default function RawResult() {
       to: to,
       condition: condition,
       searchType: searchType as "raw" | "statics",
+      pageNo: 0,
+      pageSize: 8000,
     });
   }, [search]);
 

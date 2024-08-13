@@ -3,6 +3,8 @@ import "../override.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import DropdownContent from "./DropdownContent";
+import { useQuery } from "react-query";
+import api from "../api";
 
 const items: MenuProps["items"] = [];
 
@@ -11,6 +13,12 @@ const menuProps = {
 };
 
 export default function NavBar() {
+  const { data } = useQuery({
+    queryKey: ["dashboard"],
+    queryFn: () => api.topic.getTopicList(),
+  });
+
+  const homeId = data?.data.at(0)?.id;
   const navigate = useNavigate();
 
   const { pathname } = useLocation();
@@ -29,7 +37,7 @@ export default function NavBar() {
             type="text"
             size="large"
             className={pathname === "/" ? "text-black" : "text-neutral-400"}
-            onClick={() => navigate("/")}
+            onClick={() => navigate(`/?workspace=${homeId}`)}
           >
             Dashboard
           </Button>
