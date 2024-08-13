@@ -99,28 +99,34 @@ export default function DropdownContent({ onClose }: Props) {
         });
         return;
       }
-
-      const aggCondition =
-        JSON.parse(searchParams.get("aggConditions") ?? "") ??
-        aggInitialForm.searchSettings;
-
-      setAggForm({
-        to: to ?? "",
-        topicName: topicName ?? "",
-        searchType: searchType as "raw" | "statics",
-        from: from ?? "",
-        // URL에서 가져오기
-        searchSettings: aggCondition,
-      });
-
-      setForm({
-        topicName,
-        from,
-        to,
-        condition: initialForm.condition,
-        searchType: searchType as "raw" | "statics",
-      });
     }
+
+    const aggTopicName =
+      searchParams.get("topicName") ?? aggInitialForm.topicName;
+    const aggFrom = searchParams.get("start") ?? aggInitialForm.from;
+    const aggTo = searchParams.get("end") ?? aggInitialForm.to;
+    const aggSearchType =
+      searchParams.get("searchType") ?? aggInitialForm.searchType;
+    const aggConditionsStr = searchParams.get("aggConditions");
+    const aggCondition = aggConditionsStr
+      ? JSON.parse(aggConditionsStr)
+      : aggInitialForm.searchSettings;
+    setAggForm({
+      to: aggTo ?? "",
+      topicName: aggTopicName ?? "",
+      searchType: searchType as "raw" | "statics",
+      from: aggFrom ?? "",
+      // URL에서 가져오기
+      searchSettings: aggCondition,
+    });
+
+    setForm({
+      topicName: aggTopicName ?? "",
+      from: aggFrom ?? "",
+      to: aggTo ?? "",
+      condition: initialForm.condition,
+      searchType: aggSearchType as "raw" | "statics",
+    });
   }, [search]);
 
   const onTopicChange = (value: string) => {
@@ -417,9 +423,19 @@ export default function DropdownContent({ onClose }: Props) {
                   return;
                 } else {
                   const url = `/results?topicName=${encodeURIComponent(aggForm.topicName ?? "")}&searchType=${encodeURIComponent(aggForm.searchType ?? "")}&start=${encodeURIComponent(aggForm.from ?? "")}&end=${encodeURIComponent(aggForm.to ?? "")}&aggConditions=${encodeURIComponent(JSON.stringify(aggForm.searchSettings))}`;
+                  if (customLocalStorage.getItem("form")) {
+                    // 검색기록이 이미 있다면 배열에 추가
+                    customLocalStorage.addItem("form", aggForm);
+                    navigate(url);
+                    onClose();
+                    return;
+                  }
+                  // 검색기록이 없다면 새로만들기
 
+                  customLocalStorage.createItem("form", aggForm);
                   navigate(url);
                   onClose();
+                  return;
                 }
               }}
               className="basis-/2"

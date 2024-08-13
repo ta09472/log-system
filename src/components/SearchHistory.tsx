@@ -112,14 +112,13 @@ export default function SearchHistory({ onClose }: Props) {
                 type="text"
                 className="bg-neutral-100 flex-col flex justify-center gap-1 pt-[2.24rem] pb-10 px-0"
                 onClick={() => {
-                  console.log(v);
                   if (v.searchType === "raw") {
                     const url = `/results?topicName=${encodeURIComponent(v.topicName ?? "")}&searchType=${encodeURIComponent(v.searchType ?? "")}&start=${encodeURIComponent(v.from ?? "")}&end=${encodeURIComponent(v.to ?? "")}&conditions=${encodeURIComponent(JSON.stringify(v.condition))}`;
                     navigate(url);
                     onClose();
                     return;
                   }
-                  const url = `/aggResults?topicName=${encodeURIComponent(v.topicName ?? "")}&searchType=${encodeURIComponent(v.searchType ?? "")}&start=${encodeURIComponent(v.from ?? "")}&end=${encodeURIComponent(v.to ?? "")}&aggConditions=${encodeURIComponent(JSON.stringify(v.searchSettings))}`;
+                  const url = `/aggResults?topicName=${encodeURIComponent(v.topicName ?? "")}&searchType=${encodeURIComponent(v.searchType ?? "")}&start=${encodeURIComponent(v.from ?? "")}&end=${encodeURIComponent(v.to ?? "")}&aggConditions=${encodeURIComponent(JSON.stringify(v?.searchSettings))}`;
                   navigate(url);
                   onClose();
                 }}

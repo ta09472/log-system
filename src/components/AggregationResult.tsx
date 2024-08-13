@@ -1,4 +1,4 @@
-import { Divider, Table } from "antd";
+import { Divider, Spin, Table } from "antd";
 import { useMutation } from "react-query";
 import { useLocation, useSearchParams } from "react-router-dom";
 import api from "../api";
@@ -54,7 +54,9 @@ export default function AggregationResult() {
     JSON.parse(searchParams.get("aggConditions") ?? "") ??
     initialForm.searchSettings;
 
-  const { mutateAsync, data } = useMutation(api.aggregation.getAggregationData);
+  const { mutateAsync, data, isLoading } = useMutation(
+    api.aggregation.getAggregationData
+  );
 
   useEffect(() => {
     mutateAsync({
@@ -125,185 +127,193 @@ export default function AggregationResult() {
   } = {
     0: (
       <div className=" h-full p-4">
-        <div className=" mt-2">
-          <LegendOrdinal
-            scale={colorScale}
-            labelFormat={label => `${label.toUpperCase()}`}
-          >
-            {labels => (
-              <div style={{ display: "flex", flexDirection: "row" }}>
-                {labels.map((label, i) => (
-                  <LegendItem
-                    className={
-                      label.datum.toLocaleUpperCase() ===
-                      selectedOption.toLocaleUpperCase()
-                        ? " bg-neutral-200 cursor-pointer hover:bg-neutral-200 rounded-md p-1 shadow-sm"
-                        : " cursor-pointer hover:bg-neutral-200 rounded-md p-1"
-                    }
-                    key={`legend-quantile-${i}`}
-                    margin="0 5px"
-                    onClick={() => {
-                      if (label.datum === selectedOption) {
-                        setSelectedOption("");
-                        return;
+        <div className="  min-h-[250px]">
+          <div className=" mt-2">
+            <LegendOrdinal
+              scale={colorScale}
+              labelFormat={label => `${label.toUpperCase()}`}
+            >
+              {labels => (
+                <div style={{ display: "flex", flexDirection: "row" }}>
+                  {labels.map((label, i) => (
+                    <LegendItem
+                      className={
+                        label.datum.toLocaleUpperCase() ===
+                        selectedOption.toLocaleUpperCase()
+                          ? " bg-neutral-200 cursor-pointer hover:bg-neutral-200 rounded-md p-1 shadow-sm"
+                          : " cursor-pointer hover:bg-neutral-200 rounded-md p-1"
                       }
-                      setSelectedOption(label.datum);
-                    }}
-                  >
-                    <svg width={10} height={10}>
-                      <rect fill={label.value} width={10} height={10} />
-                    </svg>
-                    <LegendLabel align="left" margin="0 0 0 4px">
-                      {label.text}
-                    </LegendLabel>
-                  </LegendItem>
-                ))}
-              </div>
-            )}
-          </LegendOrdinal>
-        </div>
-        <XYChart
-          height={250}
-          xScale={{ type: "band" }}
-          yScale={{ type: "linear" }}
-        >
-          <AnimatedAxis
-            orientation="bottom"
-            // tickFormat={date => dayjs(date).format("YYYY")}
-            // numTicks={ticks}
-          />
-          <AnimatedAxis orientation="left" />
-
-          <AnimatedGrid columns={false} numTicks={4} />
-          {(lineData?.filter(q => q.settingName === selectedOption).length === 0
-            ? lineData // 필터링된 데이터가 없으면 원본 데이터 반환
-            : lineData?.filter(q => q.settingName === selectedOption)
-          )?.map((v, id) => (
-            <AnimatedLineSeries
-              key={id} // 각 요소에 고유한 키를 제공
-              color={colorScale(v.settingName)}
-              colorAccessor={() => colorAccessor(id)}
-              dataKey={v.settingName}
-              data={v.data}
-              {...accessors}
+                      key={`legend-quantile-${i}`}
+                      margin="0 5px"
+                      onClick={() => {
+                        if (label.datum === selectedOption) {
+                          setSelectedOption("");
+                          return;
+                        }
+                        setSelectedOption(label.datum);
+                      }}
+                    >
+                      <svg width={10} height={10}>
+                        <rect fill={label.value} width={10} height={10} />
+                      </svg>
+                      <LegendLabel align="left" margin="0 0 0 4px">
+                        {label.text}
+                      </LegendLabel>
+                    </LegendItem>
+                  ))}
+                </div>
+              )}
+            </LegendOrdinal>
+          </div>
+          <XYChart
+            height={250}
+            xScale={{ type: "band" }}
+            yScale={{ type: "linear" }}
+          >
+            <AnimatedAxis
+              orientation="bottom"
+              // tickFormat={date => dayjs(date).format("YYYY")}
+              // numTicks={ticks}
             />
-          ))}
-        </XYChart>
+            <AnimatedAxis orientation="left" />
+
+            <AnimatedGrid columns={false} numTicks={4} />
+            {(lineData?.filter(q => q.settingName === selectedOption).length ===
+            0
+              ? lineData // 필터링된 데이터가 없으면 원본 데이터 반환
+              : lineData?.filter(q => q.settingName === selectedOption)
+            )?.map((v, id) => (
+              <AnimatedLineSeries
+                key={id} // 각 요소에 고유한 키를 제공
+                color={colorScale(v.settingName)}
+                colorAccessor={() => colorAccessor(id)}
+                dataKey={v.settingName}
+                data={v.data}
+                {...accessors}
+              />
+            ))}
+          </XYChart>
+        </div>
       </div>
     ),
     1: (
       <div className=" h-full p-4">
-        <div className=" mt-2">
-          <LegendOrdinal
-            scale={colorScale}
-            labelFormat={label => `${label.toUpperCase()}`}
-          >
-            {labels => (
-              <div style={{ display: "flex", flexDirection: "row" }}>
-                {labels.map((label, i) => (
-                  <LegendItem
-                    className={
-                      label.datum.toLocaleUpperCase() ===
-                      selectedOption.toLocaleUpperCase()
-                        ? " bg-neutral-200 cursor-pointer hover:bg-neutral-200 rounded-md p-1 shadow-sm"
-                        : " cursor-pointer hover:bg-neutral-200 rounded-md p-1"
-                    }
-                    key={`legend-quantile-${i}`}
-                    margin="0 5px"
-                    onClick={() => {
-                      if (label.datum === selectedOption) {
-                        setSelectedOption("");
-                        return;
+        <div className="  min-h-[250px]">
+          <div className=" mt-2">
+            <LegendOrdinal
+              scale={colorScale}
+              labelFormat={label => `${label.toUpperCase()}`}
+            >
+              {labels => (
+                <div style={{ display: "flex", flexDirection: "row" }}>
+                  {labels.map((label, i) => (
+                    <LegendItem
+                      className={
+                        label.datum.toLocaleUpperCase() ===
+                        selectedOption.toLocaleUpperCase()
+                          ? " bg-neutral-200 cursor-pointer hover:bg-neutral-200 rounded-md p-1 shadow-sm"
+                          : " cursor-pointer hover:bg-neutral-200 rounded-md p-1"
                       }
-                      setSelectedOption(label.datum);
-                    }}
-                  >
-                    <svg width={10} height={10}>
-                      <rect fill={label.value} width={10} height={10} />
-                    </svg>
-                    <LegendLabel align="left" margin="0 0 0 4px">
-                      {label.text}
-                    </LegendLabel>
-                  </LegendItem>
-                ))}
-              </div>
-            )}
-          </LegendOrdinal>
+                      key={`legend-quantile-${i}`}
+                      margin="0 5px"
+                      onClick={() => {
+                        if (label.datum === selectedOption) {
+                          setSelectedOption("");
+                          return;
+                        }
+                        setSelectedOption(label.datum);
+                      }}
+                    >
+                      <svg width={10} height={10}>
+                        <rect fill={label.value} width={10} height={10} />
+                      </svg>
+                      <LegendLabel align="left" margin="0 0 0 4px">
+                        {label.text}
+                      </LegendLabel>
+                    </LegendItem>
+                  ))}
+                </div>
+              )}
+            </LegendOrdinal>
+          </div>
+          <XYChart
+            height={250}
+            xScale={{ type: "band" }}
+            yScale={{ type: "linear" }}
+          >
+            <AnimatedAxis orientation="left" />
+            <AnimatedAxis orientation="bottom" />
+            <AnimatedGrid columns={false} numTicks={4} />
+            {(lineData?.filter(q => q.settingName === selectedOption).length ===
+            0
+              ? lineData // 필터링된 데이터가 없으면 원본 데이터 반환
+              : lineData?.filter(q => q.settingName === selectedOption)
+            )?.map((v, id) => (
+              <AnimatedBarSeries
+                key={id} // 각 요소에 고유한 키를 제공
+                // color={colorScale(v.settingName)}
+                colorAccessor={() => colorAccessor(id)}
+                dataKey={v.settingName}
+                data={v.data}
+                {...accessors}
+              />
+            ))}
+          </XYChart>
         </div>
-        <XYChart
-          height={250}
-          xScale={{ type: "band" }}
-          yScale={{ type: "linear" }}
-        >
-          <AnimatedAxis orientation="left" />
-          <AnimatedAxis orientation="bottom" />
-          <AnimatedGrid columns={false} numTicks={4} />
-          {(lineData?.filter(q => q.settingName === selectedOption).length === 0
-            ? lineData // 필터링된 데이터가 없으면 원본 데이터 반환
-            : lineData?.filter(q => q.settingName === selectedOption)
-          )?.map((v, id) => (
-            <AnimatedBarSeries
-              key={id} // 각 요소에 고유한 키를 제공
-              // color={colorScale(v.settingName)}
-              colorAccessor={() => colorAccessor(id)}
-              dataKey={v.settingName}
-              data={v.data}
-              {...accessors}
-            />
-          ))}
-        </XYChart>
       </div>
     ),
     2: (
       <div className=" h-full p-4">
-        <div className=" mt-2">
-          <LegendOrdinal
-            scale={colorScale}
-            labelFormat={label => `${label.toUpperCase()}`}
-          >
-            {labels => (
-              <div style={{ display: "flex", flexDirection: "row" }}>
-                {labels.map((label, i) => (
-                  <LegendItem
-                    className={
-                      label.datum.toLocaleUpperCase() ===
-                      selectedOption.toLocaleUpperCase()
-                        ? " bg-neutral-200 cursor-pointer hover:bg-neutral-200 rounded-md p-1 shadow-sm"
-                        : " cursor-pointer hover:bg-neutral-200 rounded-md p-1"
-                    }
-                    key={`legend-quantile-${i}`}
-                    margin="0 5px"
-                    onClick={() => {
-                      if (label.datum === selectedOption) {
-                        setSelectedOption("");
-                        return;
+        <div className="  min-h-[250px]">
+          <div className=" mt-2">
+            <LegendOrdinal
+              scale={colorScale}
+              labelFormat={label => `${label.toUpperCase()}`}
+            >
+              {labels => (
+                <div style={{ display: "flex", flexDirection: "row" }}>
+                  {labels.map((label, i) => (
+                    <LegendItem
+                      className={
+                        label.datum.toLocaleUpperCase() ===
+                        selectedOption.toLocaleUpperCase()
+                          ? " bg-neutral-200 cursor-pointer hover:bg-neutral-200 rounded-md p-1 shadow-sm"
+                          : " cursor-pointer hover:bg-neutral-200 rounded-md p-1"
                       }
-                      setSelectedOption(label.datum);
-                    }}
-                  >
-                    <svg width={10} height={10}>
-                      <rect fill={label.value} width={10} height={10} />
-                    </svg>
-                    <LegendLabel align="left" margin="0 0 0 4px">
-                      {label.text}
-                    </LegendLabel>
-                  </LegendItem>
-                ))}
-              </div>
-            )}
-          </LegendOrdinal>
-        </div>
-        <div className=" flex">
-          <div className="  flex justify-center ">
-            <PieChart
-              width={250}
-              height={250}
-              data={
-                pieData?.filter(v => v.label === selectedOption).length === 0
-                  ? pieData
-                  : pieData?.filter(v => v.label === selectedOption)
-              }
-            />
+                      key={`legend-quantile-${i}`}
+                      margin="0 5px"
+                      onClick={() => {
+                        if (label.datum === selectedOption) {
+                          setSelectedOption("");
+                          return;
+                        }
+                        setSelectedOption(label.datum);
+                      }}
+                    >
+                      <svg width={10} height={10}>
+                        <rect fill={label.value} width={10} height={10} />
+                      </svg>
+                      <LegendLabel align="left" margin="0 0 0 4px">
+                        {label.text}
+                      </LegendLabel>
+                    </LegendItem>
+                  ))}
+                </div>
+              )}
+            </LegendOrdinal>
+          </div>
+          <div className=" flex">
+            <div className="  flex justify-center ">
+              <PieChart
+                width={250}
+                height={250}
+                data={
+                  pieData?.filter(v => v.label === selectedOption).length === 0
+                    ? pieData
+                    : pieData?.filter(v => v.label === selectedOption)
+                }
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -340,12 +350,14 @@ export default function AggregationResult() {
               </div>
             ))}
           </div>
+
           {tabPanel[id]}
         </div>
         <Divider className="" />
         <div className=" px-6 flex flex-col">
           <div className=" text-neutral-800 text-xl font-bold">전체 표</div>
           <Table
+            loading={isLoading}
             scroll={{ y: 210 }}
             columns={columns}
             dataSource={

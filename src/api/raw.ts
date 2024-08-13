@@ -3,7 +3,7 @@ import instance from "../lib/axios";
 import { Raw, RawParams } from "../schema/raw";
 import errorHandleByCode from "../util/error";
 
-type Params = RawParams & { pageSize: number; pageNo: number };
+type Params = RawParams & { pageSize?: number; pageNo?: number };
 
 export const raw = {
   getLogData: async (params: Params) => {
@@ -12,6 +12,8 @@ export const raw = {
       ...newObj,
       from: new Date(newObj.from ?? "").getTime(),
       to: new Date(newObj.to ?? "").getTime(),
+      pageSize: params.pageSize ?? 8000,
+      pageNo: params.pageNo ?? 0,
     };
 
     try {

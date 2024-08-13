@@ -7,8 +7,6 @@ import { ConfigProvider } from "antd";
 import Results from "./page/Results";
 import NotFound from "./page/NotFound";
 import ErrorBoundary from "./components/ErrorBoundary";
-
-import AggResults from "./page/AggResult";
 import AggregationResult from "./components/AggregationResult";
 
 const queryClient = new QueryClient();
