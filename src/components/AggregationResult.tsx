@@ -1,4 +1,4 @@
-import { Card, Table } from "antd";
+import { Divider, Table } from "antd";
 import { useMutation } from "react-query";
 import { useLocation, useSearchParams } from "react-router-dom";
 import api from "../api";
@@ -45,7 +45,7 @@ export default function AggregationResult() {
   const [searchParams] = useSearchParams();
   const { search } = useLocation();
   const [id, setId] = useState(0);
-  const [pieTarget, setPieTarget] = useState("");
+  const [selectedOption, setSelectedOption] = useState("");
 
   const topicName = searchParams.get("topicName") ?? initialForm.topicName;
   const from = searchParams.get("start") ?? initialForm.from;
@@ -80,27 +80,6 @@ export default function AggregationResult() {
     range: colorPallet,
   });
 
-  // const getTicks = () => {
-  //   const start = dayjs(from);
-  //   const end = dayjs(to);
-  //   const diffInMinutes = end.diff(start, "minute");
-  //   const diffInHours = end.diff(start, "hour");
-  //   const diffInDays = end.diff(start, "day");
-
-  //   if (diffInMinutes <= 1) {
-  //     // 1분 이내일 때
-  //     return 60;
-  //   } else if (diffInHours <= 1) {
-  //     // 1시간 이내일 때
-  //     return 60;
-  //   } else if (diffInDays <= 1) {
-  //     // 1일 이내일 때
-  //     return 24;
-  //   } else {
-  //     // 1일 이상일 때
-  //     return undefined;
-  //   }
-  // };
   const filteredData = lineData?.map(setting => ({
     settingName: setting.settingName,
     data: setting.data.filter(item => item.y !== 0),
@@ -115,9 +94,31 @@ export default function AggregationResult() {
 
   const pieData = sumData?.map(v => ({ label: v.settingName, value: v.total }));
 
-  const currentTarget = filteredData?.find(v => v.settingName === pieTarget);
+  const transformedData = filteredData?.flatMap(item =>
+    item.data.map(d => ({
+      settingName: item.settingName.toLocaleUpperCase(),
+      x: d.x,
+      y: d.y,
+    }))
+  );
 
-  console.log();
+  const columns = [
+    {
+      title: "Name",
+      dataIndex: "settingName",
+      key: "settingName",
+    },
+    {
+      title: "Time",
+      dataIndex: "x",
+      key: "time",
+    },
+    {
+      title: "Count",
+      dataIndex: "y",
+      key: "count",
+    },
+  ];
 
   const tabPanel: {
     [key: number]: ReactNode;
@@ -132,7 +133,23 @@ export default function AggregationResult() {
             {labels => (
               <div style={{ display: "flex", flexDirection: "row" }}>
                 {labels.map((label, i) => (
-                  <LegendItem key={`legend-quantile-${i}`} margin="0 5px">
+                  <LegendItem
+                    className={
+                      label.datum.toLocaleUpperCase() ===
+                      selectedOption.toLocaleUpperCase()
+                        ? " bg-neutral-200 cursor-pointer hover:bg-neutral-200 rounded-md p-1 shadow-sm"
+                        : " cursor-pointer hover:bg-neutral-200 rounded-md p-1"
+                    }
+                    key={`legend-quantile-${i}`}
+                    margin="0 5px"
+                    onClick={() => {
+                      if (label.datum === selectedOption) {
+                        setSelectedOption("");
+                        return;
+                      }
+                      setSelectedOption(label.datum);
+                    }}
+                  >
                     <svg width={10} height={10}>
                       <rect fill={label.value} width={10} height={10} />
                     </svg>
@@ -158,17 +175,19 @@ export default function AggregationResult() {
           <AnimatedAxis orientation="left" />
 
           <AnimatedGrid columns={false} numTicks={4} />
-          {lineData?.map((v, id) => {
-            return (
-              <AnimatedLineSeries
-                color={colorScale(v.settingName)}
-                colorAccessor={() => colorAccessor(id)}
-                dataKey={v.settingName}
-                data={v.data}
-                {...accessors}
-              />
-            );
-          })}
+          {(lineData?.filter(q => q.settingName === selectedOption).length === 0
+            ? lineData // 필터링된 데이터가 없으면 원본 데이터 반환
+            : lineData?.filter(q => q.settingName === selectedOption)
+          )?.map((v, id) => (
+            <AnimatedLineSeries
+              key={id} // 각 요소에 고유한 키를 제공
+              color={colorScale(v.settingName)}
+              colorAccessor={() => colorAccessor(id)}
+              dataKey={v.settingName}
+              data={v.data}
+              {...accessors}
+            />
+          ))}
         </XYChart>
       </div>
     ),
@@ -182,7 +201,23 @@ export default function AggregationResult() {
             {labels => (
               <div style={{ display: "flex", flexDirection: "row" }}>
                 {labels.map((label, i) => (
-                  <LegendItem key={`legend-quantile-${i}`} margin="0 5px">
+                  <LegendItem
+                    className={
+                      label.datum.toLocaleUpperCase() ===
+                      selectedOption.toLocaleUpperCase()
+                        ? " bg-neutral-200 cursor-pointer hover:bg-neutral-200 rounded-md p-1 shadow-sm"
+                        : " cursor-pointer hover:bg-neutral-200 rounded-md p-1"
+                    }
+                    key={`legend-quantile-${i}`}
+                    margin="0 5px"
+                    onClick={() => {
+                      if (label.datum === selectedOption) {
+                        setSelectedOption("");
+                        return;
+                      }
+                      setSelectedOption(label.datum);
+                    }}
+                  >
                     <svg width={10} height={10}>
                       <rect fill={label.value} width={10} height={10} />
                     </svg>
@@ -203,16 +238,19 @@ export default function AggregationResult() {
           <AnimatedAxis orientation="left" />
           <AnimatedAxis orientation="bottom" />
           <AnimatedGrid columns={false} numTicks={4} />
-          {lineData?.map((v, id) => {
-            return (
-              <AnimatedBarSeries
-                colorAccessor={() => colorAccessor(id)}
-                dataKey={v.settingName}
-                data={v.data}
-                {...accessors}
-              />
-            );
-          })}
+          {(lineData?.filter(q => q.settingName === selectedOption).length === 0
+            ? lineData // 필터링된 데이터가 없으면 원본 데이터 반환
+            : lineData?.filter(q => q.settingName === selectedOption)
+          )?.map((v, id) => (
+            <AnimatedBarSeries
+              key={id} // 각 요소에 고유한 키를 제공
+              // color={colorScale(v.settingName)}
+              colorAccessor={() => colorAccessor(id)}
+              dataKey={v.settingName}
+              data={v.data}
+              {...accessors}
+            />
+          ))}
         </XYChart>
       </div>
     ),
@@ -226,7 +264,23 @@ export default function AggregationResult() {
             {labels => (
               <div style={{ display: "flex", flexDirection: "row" }}>
                 {labels.map((label, i) => (
-                  <LegendItem key={`legend-quantile-${i}`} margin="0 5px">
+                  <LegendItem
+                    className={
+                      label.datum.toLocaleUpperCase() ===
+                      selectedOption.toLocaleUpperCase()
+                        ? " bg-neutral-200 cursor-pointer hover:bg-neutral-200 rounded-md p-1 shadow-sm"
+                        : " cursor-pointer hover:bg-neutral-200 rounded-md p-1"
+                    }
+                    key={`legend-quantile-${i}`}
+                    margin="0 5px"
+                    onClick={() => {
+                      if (label.datum === selectedOption) {
+                        setSelectedOption("");
+                        return;
+                      }
+                      setSelectedOption(label.datum);
+                    }}
+                  >
                     <svg width={10} height={10}>
                       <rect fill={label.value} width={10} height={10} />
                     </svg>
@@ -240,17 +294,20 @@ export default function AggregationResult() {
           </LegendOrdinal>
         </div>
         <div className=" flex">
-          <div className=" basis-2/3 flex justify-center">
+          <div className="  flex justify-center ">
             <PieChart
               width={250}
               height={250}
-              data={pieData}
-              target={pieTarget}
-              setPieTarget={setPieTarget}
+              data={
+                pieData?.filter(v => v.label === selectedOption).length === 0
+                  ? pieData
+                  : pieData?.filter(v => v.label === selectedOption)
+              }
             />
           </div>
-          <div className=" basis-1/3 flex gap-16 flex-wrap max-h-[10rem] items-center">
-            <div>
+
+          {/* <div className=" basis-1/3 flex gap-16 flex-wrap max-h-[10rem] items-center">
+            <div className=" font-semibold min-w-[8rem]">
               {currentTarget?.settingName
                 ? currentTarget.settingName.toLocaleUpperCase()
                 : "TOTAL"}
@@ -260,7 +317,7 @@ export default function AggregationResult() {
                 <div className=" basis-1/2 text-neutral-500">Time</div>
                 <div className=" basis-1/2 text-neutral-500">Count</div>
               </div>
-              {pieTarget === "" ? (
+              {selectedOption === "" ? (
                 <div className=" max-h-[14rem] min-w-[20rem] flex flex-col gap-3 overflow-scroll">
                   {filteredData
                     ?.flatMap(item => item.data)
@@ -288,7 +345,7 @@ export default function AggregationResult() {
                 </div>
               )}
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     ),
@@ -310,7 +367,7 @@ export default function AggregationResult() {
             {["Trend", "Comparison", "Frequency"].map((v, index) => (
               <div
                 key={v}
-                className={`first:rounded-tl-md min-w-[14rem] p-4 min-h-[6rem] flex-col border-r-[0.1rem] cursor-pointer ${
+                className={`first:rounded-tl-md min-w-[14rem] p-4 min-h-[4rem] flex-col border-r-[0.1rem] cursor-pointer ${
                   id === index
                     ? "bg-white border-b-neutral-700 border-b-[0.2rem] "
                     : ""
@@ -324,11 +381,25 @@ export default function AggregationResult() {
           </div>
           {tabPanel[id]}
         </div>
-      </div>
-      <div className=" flex gap-2 w-full">
-        <Card title="대충 전체 표" className="w-full">
-          <Table />
-        </Card>
+        <Divider className="" />
+        <div className=" px-6 flex flex-col">
+          <div className=" text-neutral-800 text-xl font-bold">전체 표</div>
+          <Table
+            scroll={{ y: 210 }}
+            columns={columns}
+            dataSource={
+              (
+                transformedData?.filter(
+                  c => c.settingName === selectedOption.toLocaleUpperCase()
+                ) || []
+              ).length > 0
+                ? transformedData?.filter(
+                    c => c.settingName === selectedOption.toLocaleUpperCase()
+                  )
+                : transformedData
+            }
+          />
+        </div>
       </div>
     </Layout>
   );
