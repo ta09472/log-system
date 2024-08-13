@@ -1,7 +1,7 @@
-import { Button, Card, Dropdown, InputRef, MenuProps } from "antd";
+import { Button, Card, Dropdown, MenuProps } from "antd";
 import "../override.css";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import DropdownContent from "./DropdownContent";
 
 const items: MenuProps["items"] = [];
@@ -12,16 +12,13 @@ const menuProps = {
 
 export default function NavBar() {
   const navigate = useNavigate();
-  const ref = useRef<InputRef>(null);
+
   const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
 
   const handleDropdownClick = () => {
     setOpen(true);
     // 포커스 맞추기
-    setTimeout(() => {
-      ref.current?.focus();
-    }, 0); // `setTimeout`을 사용하여 포커스가 `Dropdown` 컴포넌트에 적용되도록 합니다.
   };
 
   return (
@@ -57,7 +54,7 @@ export default function NavBar() {
             onOpenChange={() => setOpen(false)}
             overlayClassName="bg-white rounded"
             dropdownRender={() => (
-              <DropdownContent onClose={() => setOpen(false)} ref={ref} />
+              <DropdownContent onClose={() => setOpen(false)} />
             )}
           >
             <Button

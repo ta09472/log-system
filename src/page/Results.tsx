@@ -26,34 +26,20 @@ import { LegendItem, LegendLabel, LegendOrdinal } from "@visx/legend";
 import { scaleOrdinal } from "@visx/scale";
 import { colorPallet } from "../components/Statistics";
 import AggregationResult from "../components/AggregationResult";
-
-const initialForm: RawParams = {
-  topicName: undefined,
-  searchType: "raw",
-  from: undefined,
-  to: undefined,
-  condition: [{ fieldName: "", keyword: "", equal: true }],
-};
+import RawResult from "../components/RawResult";
 
 export default function Report() {
-  // const [searchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
+  const searchType = searchParams.get("searchType") ?? "raw";
   // const { mutate, isLoading, data } = useMutation(api.raw.getLogData);
   // const { search } = useLocation();
 
   // const topicName = searchParams.get("topicName") ?? initialForm.topicName;
   // const from = searchParams.get("start") ?? initialForm.from;
   // const to = searchParams.get("end") ?? initialForm.to;
-  // const searchType = searchParams.get("searchType") ?? initialForm.searchType;
+
   // const condition =
   //   JSON.parse(searchParams.get("conditions") ?? "") ?? initialForm.topicName;
-
-  // const [form, setForm] = useState<RawParams>({
-  //   topicName,
-  //   from,
-  //   to,
-  //   condition,
-  //   searchType: searchType as "raw" | "statics",
-  // });
 
   // // 이거 가지고 데이터 조회
   // // 서치타입에 따라서 url 바꿔서\
@@ -105,17 +91,12 @@ export default function Report() {
   //   range: colorPallet,
   // });
 
-  // if (searchType === "statics") return <AggregationResult />;
+  if (searchType === "statics") return <AggregationResult />;
 
-  return (
-    <Layout>
-      <Skeleton active>
-        <div className=" font-bold text-2xl">
-          {/* 검색결과가 {data?.data.result.length}개 있습니다. */}
-        </div>
-      </Skeleton>
+  return <RawResult />;
 
-      {/* <Card bordered={false} className="basis-1/4">
+  {
+    /* <Card bordered={false} className="basis-1/4">
           <div className=" text-xl font-bold">빈도수</div>
           <PieChart width={300} height={300} />
 
@@ -143,14 +124,15 @@ export default function Report() {
             </div>
             <Select variant="filled" value={"asd"} className="w-full mt-4" />
           </div>
-        </Card> */}
+        </Card> */
+  }
 
-      {/* <Card loading={isLoading} bordered={false} className="">
+  {
+    /* <Card loading={isLoading} bordered={false} className="">
         <div className=" text-xl font-bold">검색 결과</div>
         <Table loading={isLoading} columns={columns} dataSource={dataSource} />
-      </Card> */}
-    </Layout>
-  );
+      </Card> */
+  }
 }
 
 // <Card bordered={false}>

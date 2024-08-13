@@ -1,14 +1,5 @@
-import {
-  Button,
-  DatePicker,
-  Divider,
-  Input,
-  InputRef,
-  message,
-  Radio,
-  Select,
-} from "antd";
-import { LegacyRef, useEffect, useState } from "react";
+import { Button, DatePicker, Divider, message, Radio, Select } from "antd";
+import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import api from "../api";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
@@ -23,7 +14,6 @@ import disabled7DaysDate from "../util/dateRange";
 import { LogAggregationParams } from "../schema/aggregation";
 
 interface Props {
-  ref: LegacyRef<InputRef> | undefined;
   onClose: () => void;
 }
 
@@ -49,12 +39,14 @@ const aggInitialForm: AggForm = {
   ],
 };
 
-export default function DropdownContent({ ref, onClose }: Props) {
+export default function DropdownContent({ onClose }: Props) {
   const [form, setForm] = useState<RawParams>(initialForm);
   const [aggForm, setAggForm] = useState<AggForm>(aggInitialForm);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { pathname, search } = useLocation();
+  const searchType = searchParams.get("searchType") ?? initialForm.searchType;
+
   const { data } = useQuery({
     queryKey: ["dashboard"],
     queryFn: () => api.topic.getTopicList(),
@@ -65,11 +57,6 @@ export default function DropdownContent({ ref, onClose }: Props) {
   const target = data?.data.find(
     ({ topicName }) => topicName === form?.topicName
   );
-
-  const topicName = searchParams.get("topicName") ?? initialForm.topicName;
-  const from = searchParams.get("start") ?? initialForm.from;
-  const to = searchParams.get("end") ?? initialForm.to;
-  const searchType = searchParams.get("searchType") ?? initialForm.searchType;
 
   const dataFiledOptions = target?.fields.map(({ fieldName }) => ({
     label: fieldName,
@@ -135,9 +122,6 @@ export default function DropdownContent({ ref, onClose }: Props) {
       });
     }
   }, [search]);
-
-  console.log(form);
-  console.log(aggForm);
 
   const onTopicChange = (value: string) => {
     setForm(prev => {

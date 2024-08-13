@@ -3,15 +3,18 @@ import { useMutation } from "react-query";
 import { useLocation, useSearchParams } from "react-router-dom";
 import api from "../api";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Layout from "../Layout/Layout";
 import { LogAggregationParams } from "../schema/aggregation";
 import dayjs from "dayjs";
 
-const initialForm: LogAggregationParams = {
+type AggForm = LogAggregationParams & { searchType: "raw" | "statics" };
+
+const initialForm: AggForm = {
   topicName: "",
-  from: 0,
-  to: 0,
+  searchType: "statics",
+  from: dayjs().subtract(1, "day").toISOString(),
+  to: dayjs().toISOString(),
   searchSettings: [
     {
       settingName: "",
@@ -21,48 +24,35 @@ const initialForm: LogAggregationParams = {
 };
 
 export default function AggregationResult() {
-  // const [searchParams] = useSearchParams();
-  // const { mutate } = useMutation(api.aggregation.getAggregationData);
-  // const { search } = useLocation();
+  const [searchParams] = useSearchParams();
+  const { search } = useLocation();
 
-  // const topicName = searchParams.get("topicName") ?? initialForm.topicName;
-  // const from = searchParams.get("start") ?? initialForm.from;
-  // const to = searchParams.get("end") ?? initialForm.to;
-  // const aggCondition =
-  //   JSON.parse(searchParams.get("aggConditions") ?? "") ??
-  //   initialForm.searchSettings;
-  // //   const searchType = searchParams.get("searchType") ?? "statics";
-  // //   const condition =
-  // //     JSON.parse(searchParams.get("conditions") ?? "") ?? initialForm.topicName;
+  const topicName = searchParams.get("topicName") ?? initialForm.topicName;
+  const from = searchParams.get("start") ?? initialForm.from;
+  const to = searchParams.get("end") ?? initialForm.to;
+  const searchSettings =
+    JSON.parse(searchParams.get("aggConditions") ?? "") ??
+    initialForm.searchSettings;
 
-  // const [form, setForm] = useState<LogAggregationParams>({
-  //   topicName,
-  //   from: dayjs(from).format("YYYY-MM-DD HH:mm:ss"),
-  //   to: dayjs(to).format("YYYY-MM-DD HH:mm:ss"),
-  //   searchSettings: initialForm.searchSettings,
-  // });
+  const { mutate, isLoading, data } = useMutation(
+    api.aggregation.getAggregationData
+  );
 
-  // useEffect(() => {
-  //   setForm({
-  //     topicName,
-  //     from: dayjs(from).format("YYYY-MM-DD HH:mm:ss"),
-  //     to: dayjs(to).format("YYYY-MM-DD HH:mm:ss"),
-  //     searchSettings: aggCondition,
-  //   });
+  useEffect(() => {
+    mutate({
+      topicName,
+      from,
+      to,
+      searchSettings,
+    });
+  }, [search]);
 
-  //   mutate({
-  //     topicName: topicName ?? "",
-  //     from: dayjs(from).format("YYYY-MM-DD HH:mm:ss"),
-  //     to: dayjs(to).format("YYYY-MM-DD HH:mm:ss"),
-  //     searchSettings: aggCondition,
-  //   });
-  // }, [search]);
+  console.log(data);
 
-  // console.log(form);
   return (
     <Layout>
-      <Card bordered={false} className="">
-        <div className=" text-xl font-bold">검색 결과</div>
+      <Card bordered={false} className="" loading={isLoading}>
+        <div className=" text-xl font-bold">AGG 검색 결과</div>
       </Card>
     </Layout>
   );

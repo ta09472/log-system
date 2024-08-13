@@ -65,10 +65,15 @@ export const aggregation = {
   },
 
   getAggregationData: async (params: LogAggregationParams) => {
+    const convertedParams = {
+      ...params,
+      from: new Date(params.from).getTime(),
+      to: new Date(params.to).getTime(),
+    };
     try {
       const response = await instance.post<LogAggregationResponse>(
         `/api/log-data/aggregation`,
-        params
+        convertedParams
       );
       return response;
     } catch (error) {
