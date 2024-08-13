@@ -93,6 +93,16 @@ export default function DropdownContent({ ref, onClose }: Props) {
         const condition =
           JSON.parse(searchParams.get("conditions") ?? "") ??
           initialForm.topicName;
+
+        setAggForm({
+          to: to ?? "",
+          topicName: topicName ?? "",
+          searchType: searchType as "raw" | "statics",
+          from: from ?? "",
+          // URL에서 가져오기
+          searchSettings: aggInitialForm.searchSettings,
+        });
+
         setForm({
           topicName,
           from,
@@ -114,6 +124,14 @@ export default function DropdownContent({ ref, onClose }: Props) {
         from: from ?? "",
         // URL에서 가져오기
         searchSettings: aggCondition,
+      });
+
+      setForm({
+        topicName,
+        from,
+        to,
+        condition: initialForm.condition,
+        searchType: searchType as "raw" | "statics",
       });
     }
   }, [search]);
