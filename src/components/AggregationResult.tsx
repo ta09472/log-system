@@ -305,47 +305,6 @@ export default function AggregationResult() {
               }
             />
           </div>
-
-          {/* <div className=" basis-1/3 flex gap-16 flex-wrap max-h-[10rem] items-center">
-            <div className=" font-semibold min-w-[8rem]">
-              {currentTarget?.settingName
-                ? currentTarget.settingName.toLocaleUpperCase()
-                : "TOTAL"}
-            </div>
-            <div className=" flex flex-col">
-              <div className=" flex">
-                <div className=" basis-1/2 text-neutral-500">Time</div>
-                <div className=" basis-1/2 text-neutral-500">Count</div>
-              </div>
-              {selectedOption === "" ? (
-                <div className=" max-h-[14rem] min-w-[20rem] flex flex-col gap-3 overflow-scroll">
-                  {filteredData
-                    ?.flatMap(item => item.data)
-                    .map(v => {
-                      return (
-                        <div className=" flex">
-                          <div className=" basis-1/2 text-sm">{v.x}</div>
-                          <div className=" basis-1/2 text-sm">{v.y}</div>
-                        </div>
-                      );
-                    })}
-                </div>
-              ) : (
-                <div className=" overflow-scroll max-h-[14rem] min-w-[20rem] flex flex-col gap-3">
-                  {filteredData
-                    ?.find(f => f.settingName === currentTarget?.settingName)
-                    ?.data.map(s => {
-                      return (
-                        <div className=" flex">
-                          <div className=" basis-1/2 text-sm">{s.x}</div>
-                          <div className=" basis-1/2 text-sm">{s.y}</div>
-                        </div>
-                      );
-                    })}
-                </div>
-              )}
-            </div>
-          </div> */}
         </div>
       </div>
     ),
@@ -355,11 +314,7 @@ export default function AggregationResult() {
     <Layout>
       <div className=" flex flex-col">
         <div className=" text-xl font-bold">조건</div>
-        {/* <DatePicker.RangePicker showTime /> */}
       </div>
-
-      {/* <Card bordered={false} className="" loading={isLoading}></Card>
-       */}
 
       <div className="w-full h-full bg-white rounded-md shadow-sm">
         <div className=" rounded-t-md">
@@ -374,8 +329,14 @@ export default function AggregationResult() {
                 }`}
                 onClick={() => setId(index)}
               >
-                <div className="text-neutral-500 font-semibold">{v}</div>
-                <div>대충 숫잔</div>
+                <div className="text-neutral-600 font-semibold">{v}</div>
+                <div className=" text-neutral-400 text-sm">
+                  {[
+                    "Trend of Occurrence for Search Results",
+                    "Comparison Groups for Search Results",
+                    "Frequency of Search Results",
+                  ].at(index)}
+                </div>
               </div>
             ))}
           </div>

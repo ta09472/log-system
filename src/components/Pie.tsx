@@ -48,7 +48,6 @@ const PieChart = ({ width, height, data }: Props) => {
             pie.arcs.map(arc => (
               <g
                 key={arc.data.label}
-                className=" cursor-pointer"
                 dataset-target={arc.data.label}
                 // onClick={() => {
                 //   if (target === arc.data.label) {
