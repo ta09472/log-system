@@ -354,6 +354,7 @@ export default function DropdownContent({ onClose }: Props) {
             <div>
               <div className="font-semibold text-lg mb-2">Date</div>
               <DatePicker.RangePicker
+                showTime
                 value={[dayjs(value.from), dayjs(value.to)]}
                 variant="filled"
                 disabledDate={disabled7DaysDate}
