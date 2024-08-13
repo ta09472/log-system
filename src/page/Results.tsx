@@ -36,82 +36,82 @@ const initialForm: RawParams = {
 };
 
 export default function Report() {
-  const [searchParams] = useSearchParams();
-  const { mutate, isLoading, data } = useMutation(api.raw.getLogData);
-  const { search } = useLocation();
+  // const [searchParams] = useSearchParams();
+  // const { mutate, isLoading, data } = useMutation(api.raw.getLogData);
+  // const { search } = useLocation();
 
-  const topicName = searchParams.get("topicName") ?? initialForm.topicName;
-  const from = searchParams.get("start") ?? initialForm.from;
-  const to = searchParams.get("end") ?? initialForm.to;
-  const searchType = searchParams.get("searchType") ?? initialForm.searchType;
-  const condition =
-    JSON.parse(searchParams.get("conditions") ?? "") ?? initialForm.topicName;
+  // const topicName = searchParams.get("topicName") ?? initialForm.topicName;
+  // const from = searchParams.get("start") ?? initialForm.from;
+  // const to = searchParams.get("end") ?? initialForm.to;
+  // const searchType = searchParams.get("searchType") ?? initialForm.searchType;
+  // const condition =
+  //   JSON.parse(searchParams.get("conditions") ?? "") ?? initialForm.topicName;
 
-  const [form, setForm] = useState<RawParams>({
-    topicName,
-    from,
-    to,
-    condition,
-    searchType: searchType as "raw" | "statics",
-  });
+  // const [form, setForm] = useState<RawParams>({
+  //   topicName,
+  //   from,
+  //   to,
+  //   condition,
+  //   searchType: searchType as "raw" | "statics",
+  // });
 
-  // 이거 가지고 데이터 조회
-  // 서치타입에 따라서 url 바꿔서\
+  // // 이거 가지고 데이터 조회
+  // // 서치타입에 따라서 url 바꿔서\
 
-  useEffect(() => {
-    setForm({
-      topicName,
-      from,
-      to,
-      condition,
-      searchType: searchType as "raw" | "statics",
-    });
+  // useEffect(() => {
+  //   setForm({
+  //     topicName,
+  //     from,
+  //     to,
+  //     condition,
+  //     searchType: searchType as "raw" | "statics",
+  //   });
 
-    mutate({
-      topicName: topicName,
-      from: from,
-      to: to,
-      condition: condition,
-      searchType: searchType as "raw" | "statics",
-    });
-  }, [search]);
+  //   mutate({
+  //     topicName: topicName,
+  //     from: from,
+  //     to: to,
+  //     condition: condition,
+  //     searchType: searchType as "raw" | "statics",
+  //   });
+  // }, [search]);
 
-  const transformedArray = data?.data.result.map(item => {
-    const { data, ...rest } = item;
-    return {
-      ...rest,
-      ...data,
-    };
-  });
+  // const transformedArray = data?.data.result.map(item => {
+  //   const { data, ...rest } = item;
+  //   return {
+  //     ...rest,
+  //     ...data,
+  //   };
+  // });
 
-  const dataSource = transformedArray?.map(v => {
-    const date = dayjs(v.timestamp).format("YYYY-MM:DD HH:mm:ss");
-    return {
-      ...v,
-      timestamp: date,
-    };
-  });
+  // const dataSource = transformedArray?.map(v => {
+  //   const date = dayjs(v.timestamp).format("YYYY-MM:DD HH:mm:ss");
+  //   return {
+  //     ...v,
+  //     timestamp: date,
+  //   };
+  // });
 
-  const columns = Object.keys(transformedArray?.at(0) ?? {}).map(key => {
-    return {
-      title: key.charAt(0).toUpperCase() + key.slice(1),
-      dataIndex: key,
-      key: key,
-    };
-  });
+  // const columns = Object.keys(transformedArray?.at(0) ?? {}).map(key => {
+  //   return {
+  //     title: key.charAt(0).toUpperCase() + key.slice(1),
+  //     dataIndex: key,
+  //     key: key,
+  //   };
+  // });
 
-  const colorScale = scaleOrdinal({
-    domain: dataSource?.map(v => v.topicName),
-    range: colorPallet,
-  });
+  // const colorScale = scaleOrdinal({
+  //   domain: dataSource?.map(v => v.topicName),
+  //   range: colorPallet,
+  // });
 
-  if (searchType === "statics") return <AggregationResult />;
+  // if (searchType === "statics") return <AggregationResult />;
 
   return (
     <Layout>
-      <Skeleton active loading={isLoading}>
+      <Skeleton active>
         <div className=" font-bold text-2xl">
-          검색결과가 {data?.data.result.length}개 있습니다.
+          {/* 검색결과가 {data?.data.result.length}개 있습니다. */}
         </div>
       </Skeleton>
 
@@ -145,10 +145,10 @@ export default function Report() {
           </div>
         </Card> */}
 
-      <Card loading={isLoading} bordered={false} className="">
+      {/* <Card loading={isLoading} bordered={false} className="">
         <div className=" text-xl font-bold">검색 결과</div>
         <Table loading={isLoading} columns={columns} dataSource={dataSource} />
-      </Card>
+      </Card> */}
     </Layout>
   );
 }

@@ -332,6 +332,15 @@ export default function AggregationForm({ form, setForm }: Props) {
                       <div className="text-neutral-700 basis-1/12 text-end min-w-[7.5rem] ">
                         <Button
                           onClick={() => {
+                            // 필드 하나만 있으면 리턴
+
+                            if (v.conditionList.length === 1) {
+                              messageApi.warning(
+                                "You need at least one keyword."
+                              );
+                              return;
+                            }
+
                             setForm(prev => {
                               return {
                                 ...prev,

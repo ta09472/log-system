@@ -6,6 +6,7 @@ import api from "../api";
 import { useEffect, useState } from "react";
 import Layout from "../Layout/Layout";
 import { LogAggregationParams } from "../schema/aggregation";
+import dayjs from "dayjs";
 
 const initialForm: LogAggregationParams = {
   topicName: "",
@@ -20,41 +21,44 @@ const initialForm: LogAggregationParams = {
 };
 
 export default function AggregationResult() {
-  const [searchParams] = useSearchParams();
-  const { mutate } = useMutation(api.aggregation.getAggregationData);
-  const { search } = useLocation();
+  // const [searchParams] = useSearchParams();
+  // const { mutate } = useMutation(api.aggregation.getAggregationData);
+  // const { search } = useLocation();
 
-  const topicName = searchParams.get("topicName") ?? initialForm.topicName;
-  const from = searchParams.get("start") ?? initialForm.from;
-  const to = searchParams.get("end") ?? initialForm.to;
-  //   const searchType = searchParams.get("searchType") ?? "statics";
-  //   const condition =
-  //     JSON.parse(searchParams.get("conditions") ?? "") ?? initialForm.topicName;
+  // const topicName = searchParams.get("topicName") ?? initialForm.topicName;
+  // const from = searchParams.get("start") ?? initialForm.from;
+  // const to = searchParams.get("end") ?? initialForm.to;
+  // const aggCondition =
+  //   JSON.parse(searchParams.get("aggConditions") ?? "") ??
+  //   initialForm.searchSettings;
+  // //   const searchType = searchParams.get("searchType") ?? "statics";
+  // //   const condition =
+  // //     JSON.parse(searchParams.get("conditions") ?? "") ?? initialForm.topicName;
 
-  const [form, setForm] = useState<LogAggregationParams>({
-    topicName,
-    from: new Date(from).getTime(),
-    to: new Date(to).getTime(),
-    searchSettings: initialForm.searchSettings,
-  });
+  // const [form, setForm] = useState<LogAggregationParams>({
+  //   topicName,
+  //   from: dayjs(from).format("YYYY-MM-DD HH:mm:ss"),
+  //   to: dayjs(to).format("YYYY-MM-DD HH:mm:ss"),
+  //   searchSettings: initialForm.searchSettings,
+  // });
 
-  useEffect(() => {
-    setForm({
-      topicName,
-      from: new Date(from).getTime(),
-      to: new Date(to).getTime(),
-      searchSettings: initialForm.searchSettings,
-    });
+  // useEffect(() => {
+  //   setForm({
+  //     topicName,
+  //     from: dayjs(from).format("YYYY-MM-DD HH:mm:ss"),
+  //     to: dayjs(to).format("YYYY-MM-DD HH:mm:ss"),
+  //     searchSettings: aggCondition,
+  //   });
 
-    mutate({
-      topicName: topicName ?? "",
-      from: new Date(from ?? "").getTime(),
-      to: new Date(to ?? "").getTime(),
-      searchSettings: initialForm.searchSettings,
-    });
-  }, [search]);
+  //   mutate({
+  //     topicName: topicName ?? "",
+  //     from: dayjs(from).format("YYYY-MM-DD HH:mm:ss"),
+  //     to: dayjs(to).format("YYYY-MM-DD HH:mm:ss"),
+  //     searchSettings: aggCondition,
+  //   });
+  // }, [search]);
 
-  console.log(form);
+  // console.log(form);
   return (
     <Layout>
       <Card bordered={false} className="">

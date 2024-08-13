@@ -26,7 +26,7 @@ export default function RawForm({
   removeCondition,
 }: Props) {
   return (
-    <>
+    <div key={form.topicName}>
       {form.topicName && (
         <>
           <Divider />
@@ -137,6 +137,6 @@ export default function RawForm({
           <Divider />
         </>
       )}
-    </>
+    </div>
   );
 }

@@ -7,7 +7,9 @@ import { ConfigProvider } from "antd";
 import Results from "./page/Results";
 import NotFound from "./page/NotFound";
 import ErrorBoundary from "./components/ErrorBoundary";
-import Setting from "./page/Setting";
+
+import AggResults from "./page/AggResult";
+import AggregationResult from "./components/AggregationResult";
 
 const queryClient = new QueryClient();
 
@@ -25,7 +27,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/results" element={<Results />} />
-            <Route path="/setting" element={<Setting />} />
+            <Route path="/aggResults" element={<AggregationResult />} />
 
             <Route path="*" element={<NotFound />} />
           </Routes>

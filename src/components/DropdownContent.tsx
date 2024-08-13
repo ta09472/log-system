@@ -39,8 +39,8 @@ type AggForm = LogAggregationParams & { searchType: "raw" | "statics" };
 const aggInitialForm: AggForm = {
   topicName: "",
   searchType: "statics",
-  from: dayjs().format(""),
-  to: dayjs().format(""),
+  from: dayjs().subtract(1, "day").toISOString(),
+  to: dayjs().toISOString(),
   searchSettings: [
     {
       settingName: "",
@@ -66,6 +66,11 @@ export default function DropdownContent({ ref, onClose }: Props) {
     ({ topicName }) => topicName === form?.topicName
   );
 
+  const topicName = searchParams.get("topicName") ?? initialForm.topicName;
+  const from = searchParams.get("start") ?? initialForm.from;
+  const to = searchParams.get("end") ?? initialForm.to;
+  const searchType = searchParams.get("searchType") ?? initialForm.searchType;
+
   const dataFiledOptions = target?.fields.map(({ fieldName }) => ({
     label: fieldName,
     value: fieldName,
@@ -83,17 +88,24 @@ export default function DropdownContent({ ref, onClose }: Props) {
       const to = searchParams.get("end") ?? initialForm.to;
       const searchType =
         searchParams.get("searchType") ?? initialForm.searchType;
-      const condition =
-        JSON.parse(searchParams.get("conditions") ?? "") ??
-        initialForm.topicName;
 
-      setForm({
-        topicName,
-        from,
-        to,
-        condition,
-        searchType: searchType as "raw" | "statics",
-      });
+      if (searchType === "raw") {
+        const condition =
+          JSON.parse(searchParams.get("conditions") ?? "") ??
+          initialForm.topicName;
+        setForm({
+          topicName,
+          from,
+          to,
+          condition,
+          searchType: searchType as "raw" | "statics",
+        });
+        return;
+      }
+
+      const aggCondition =
+        JSON.parse(searchParams.get("aggConditions") ?? "") ??
+        aggInitialForm.searchSettings;
 
       setAggForm({
         to: to ?? "",
@@ -101,12 +113,7 @@ export default function DropdownContent({ ref, onClose }: Props) {
         searchType: searchType as "raw" | "statics",
         from: from ?? "",
         // URL에서 가져오기
-        searchSettings: [
-          {
-            settingName: "",
-            conditionList: [{ fieldName: "", keyword: "", equal: true }],
-          },
-        ],
+        searchSettings: aggCondition,
       });
     }
   }, [search]);
@@ -249,14 +256,27 @@ export default function DropdownContent({ ref, onClose }: Props) {
     !form.condition?.some(v => v.keyword === "" || v.fieldName === "")
   );
 
-  console.log("form", form);
-  console.log("aggForm", aggForm);
+  const isAggInvalid = !aggForm?.searchSettings.every(
+    setting =>
+      setting.settingName !== "" &&
+      setting.conditionList.every(
+        condition => condition.fieldName !== "" && condition.keyword !== ""
+      )
+  );
+  // `searchType`에 따라 적절한 `searchType` 값 선택
+
+  const value = {
+    searchType: searchType === "raw" ? form.searchType : aggForm.searchType,
+    topicName: searchType === "raw" ? form.topicName : aggForm.topicName,
+    from: searchType === "raw" ? form.from : aggForm.from,
+    to: searchType === "raw" ? form.to : aggForm.to,
+  };
 
   return (
     <div className="px-2 w-full rounded-md flex-col shadow-md">
       <div className="flex justify-between gap-4 w-full items-center pt-1">
         <div className="pl-2 flex items-center">
-          <svg
+          {/* <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
@@ -269,8 +289,8 @@ export default function DropdownContent({ ref, onClose }: Props) {
               stroke-linejoin="round"
               d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
             />
-          </svg>
-          <Input
+          </svg> */}
+          {/* <Input
             size="large"
             ref={ref}
             placeholder="Search"
@@ -278,7 +298,7 @@ export default function DropdownContent({ ref, onClose }: Props) {
               if (e.key === "Escape") onClose();
             }}
             variant="borderless"
-          />
+          /> */}
         </div>
 
         <Button onClick={onClose} type="text">
@@ -306,7 +326,7 @@ export default function DropdownContent({ ref, onClose }: Props) {
               variant="filled"
               className=" w-full"
               showSearch
-              value={form?.topicName}
+              value={value?.topicName}
               placeholder="Select Topic"
               optionFilterProp="label"
               onChange={onTopicChange}
@@ -320,7 +340,7 @@ export default function DropdownContent({ ref, onClose }: Props) {
               <div className="font-semibold text-lg mb-2">Data Type</div>
               <Radio.Group
                 defaultValue="raw"
-                value={form.searchType}
+                value={value.searchType}
                 optionType="button"
                 buttonStyle="solid"
                 onChange={v => onSearchTypeChange(v.target.value)}
@@ -332,7 +352,7 @@ export default function DropdownContent({ ref, onClose }: Props) {
             <div>
               <div className="font-semibold text-lg mb-2">Date</div>
               <DatePicker.RangePicker
-                value={[dayjs(form.from), dayjs(form.to)]}
+                value={[dayjs(value.from), dayjs(value.to)]}
                 variant="filled"
                 disabledDate={disabled7DaysDate}
                 onChange={c => onDateChange(c)}
@@ -340,7 +360,7 @@ export default function DropdownContent({ ref, onClose }: Props) {
             </div>
           </div>
           {/* RawForm이냐 AggregationForm이냐 */}
-          {form.searchType === "raw" ? (
+          {value.searchType === "raw" ? (
             <RawForm
               form={form}
               dataFiledOptions={dataFiledOptions}
@@ -358,32 +378,46 @@ export default function DropdownContent({ ref, onClose }: Props) {
             <Button
               block
               type="text"
-              onClick={() => setForm(initialForm)}
+              onClick={() => {
+                setForm(initialForm);
+                setAggForm(aggInitialForm);
+              }}
               className="basis-/2"
             >
               Clear
             </Button>
             <Button
               loading={isLoading}
-              disabled={isInvalid}
+              disabled={
+                (form?.searchType === "raw" && isInvalid) ||
+                (form?.searchType === "statics" && isAggInvalid)
+              }
               block
               type="primary"
               onClick={() => {
-                const url = `/results?topicName=${encodeURIComponent(form.topicName ?? "")}&searchType=${encodeURIComponent(form.searchType ?? "")}&start=${encodeURIComponent(form.from ?? "")}&end=${encodeURIComponent(form.to ?? "")}&conditions=${encodeURIComponent(JSON.stringify(form.condition))}`;
-                mutate(form);
+                if (form.searchType === "raw") {
+                  const url = `/results?topicName=${encodeURIComponent(form.topicName ?? "")}&searchType=${encodeURIComponent(form.searchType ?? "")}&start=${encodeURIComponent(form.from ?? "")}&end=${encodeURIComponent(form.to ?? "")}&conditions=${encodeURIComponent(JSON.stringify(form.condition))}`;
+                  mutate(form);
 
-                if (customLocalStorage.getItem("form")) {
-                  // 검색기록이 이미 있다면 배열에 추가
-                  customLocalStorage.addItem("form", form);
+                  if (customLocalStorage.getItem("form")) {
+                    // 검색기록이 이미 있다면 배열에 추가
+                    customLocalStorage.addItem("form", form);
+                    navigate(url);
+                    onClose();
+                    return;
+                  }
+                  // 검색기록이 없다면 새로만들기
+
+                  customLocalStorage.createItem("form", form);
                   navigate(url);
                   onClose();
                   return;
-                }
-                // 검색기록이 없다면 새로만들기
+                } else {
+                  const url = `/results?topicName=${encodeURIComponent(aggForm.topicName ?? "")}&searchType=${encodeURIComponent(aggForm.searchType ?? "")}&start=${encodeURIComponent(aggForm.from ?? "")}&end=${encodeURIComponent(aggForm.to ?? "")}&aggConditions=${encodeURIComponent(JSON.stringify(aggForm.searchSettings))}`;
 
-                customLocalStorage.createItem("form", form);
-                navigate(url);
-                onClose();
+                  navigate(url);
+                  onClose();
+                }
               }}
               className="basis-/2"
             >
