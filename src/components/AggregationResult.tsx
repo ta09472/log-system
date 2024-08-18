@@ -323,7 +323,7 @@ export default function AggregationResult() {
   return (
     <Layout>
       <div className=" flex flex-col">
-        <div className=" text-xl font-bold">조건</div>
+        <div className=" text-xl font-bold">Search Results</div>
       </div>
 
       <div className="w-full h-full bg-white rounded-md shadow-sm">
@@ -355,7 +355,7 @@ export default function AggregationResult() {
         </div>
         <Divider className="" />
         <div className=" px-6 flex flex-col">
-          <div className=" text-neutral-800 text-xl font-bold">전체 표</div>
+          <div className=" text-neutral-800 text-xl font-bold">Data Table</div>
           <Table
             loading={isLoading}
             scroll={{ y: 210 }}

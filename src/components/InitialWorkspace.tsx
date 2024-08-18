@@ -11,7 +11,7 @@ export default function InitialWorkSpace() {
       bordered={false}
     >
       <Button size="large" type="primary" onClick={() => setOpen(true)}>
-        토픽 수정
+        Topic Edit
       </Button>
 
       <WorkspaceEditModal open={open} onClose={() => setOpen(false)} />

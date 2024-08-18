@@ -208,6 +208,7 @@ export default function AggregationEditModal({
               <div className=" flex flex-col" key={v.id}>
                 <div className=" flex items-center justify-between gap-[18rem]">
                   <Input
+                    key={v.id}
                     className=""
                     value={v.settingName}
                     disabled={!!aggregationCondition?.data.at(formId)}
