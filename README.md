@@ -21,25 +21,17 @@
 
 ## 스크린샷
 
-![스크린샷 2024-08-14 오전 3.23.56.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/6230a896-44e2-4d37-8578-4f257f4d8b0b/1add5a81-a5dc-434d-b450-6c6f3dc46523/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2024-08-14_%E1%84%8B%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%AB_3.23.56.png)
+<img width="2032" alt="스크린샷 2024-08-14 3시 23부" src="https://github.com/user-attachments/assets/85fe0221-a66f-4629-9fb8-62e0d00c62b6">
+<img width="2032" alt="스크린샷 2024-08-14 3시 23부" src="https://github.com/user-attachments/assets/958db419-493d-4f8d-aa66-94cbdd5a5a86">
+<img width="2032" alt="스크린샷 2024-08-14 오전 3 22 43" src="https://github.com/user-attachments/assets/2bf6b975-1b67-43e8-8e65-8f4f413f9f62">
+<img width="2032" alt="스크린샷 2024-08-14 오전 3 25 20" src="https://github.com/user-attachments/assets/6ff29551-b84a-4627-8c63-0720fd12a8a4">
+<img width="2032" alt="스크린샷 Aug 14 from 개인 프로젝트" src="https://github.com/user-attachments/assets/6aa9fcc9-1b5c-41bb-be5e-d8243ee7bee5">
 
-![스크린샷 2024-08-14 오전 3.23.49.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/6230a896-44e2-4d37-8578-4f257f4d8b0b/87e0781d-d3ba-42e6-bad6-4eb7deb6037b/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2024-08-14_%E1%84%8B%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%AB_3.23.49.png)
-
-![스크린샷 2024-08-14 오전 3.22.43.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/6230a896-44e2-4d37-8578-4f257f4d8b0b/c5835b97-120d-43a8-b09c-12d2a463a62a/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2024-08-14_%E1%84%8B%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%AB_3.22.43.png)
-
-![스크린샷 2024-08-14 오전 3.22.20.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/6230a896-44e2-4d37-8578-4f257f4d8b0b/83934077-c2d5-4267-bb76-b7a1bbcc2b4a/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2024-08-14_%E1%84%8B%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%AB_3.22.20.png)
-
-![스크린샷 2024-08-14 오전 3.25.20.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/6230a896-44e2-4d37-8578-4f257f4d8b0b/edb1d756-c2fe-4418-9dc5-3dbac8c118ba/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2024-08-14_%E1%84%8B%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%AB_3.25.20.png)
-
-![스크린샷 2024-08-14 오전 3.25.35.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/6230a896-44e2-4d37-8578-4f257f4d8b0b/e333afb5-e89a-4d15-9319-e3a6bc6cca6c/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2024-08-14_%E1%84%8B%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%AB_3.25.35.png)
-
-![스크린샷 2024-08-14 오전 3.25.28.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/6230a896-44e2-4d37-8578-4f257f4d8b0b/14ae0396-42a9-48fd-a8be-dd621c399324/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2024-08-14_%E1%84%8B%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%AB_3.25.28.png)
 
 ## 설계
 
 ### 상태 저장 주체에 따른 3계층 설계
-
-![제목_없는_아트워크.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/6230a896-44e2-4d37-8578-4f257f4d8b0b/c01f400b-80aa-40f3-a7de-dde7135ed492/%E1%84%8C%E1%85%A6%E1%84%86%E1%85%A9%E1%86%A8_%E1%84%8B%E1%85%A5%E1%86%B9%E1%84%82%E1%85%B3%E1%86%AB_%E1%84%8B%E1%85%A1%E1%84%90%E1%85%B3%E1%84%8B%E1%85%AF%E1%84%8F%E1%85%B3.png)
+![제목_없는_아트워크 (1)](https://github.com/user-attachments/assets/38abf392-7766-40fe-b1c1-5945ce163443)
 
 - Server
     - 매체: redis, elasticSearch, SpringBoot등 외부 매체
