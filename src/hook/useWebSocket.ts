@@ -11,7 +11,7 @@ export default function useWebSocket({ topicName, searchType }: Props) {
   const [message, setMessage] = useState<any>({});
 
   const client = new Client({
-    brokerURL: `ws://211.225.158.78:8080/ws`, // 기본 WebSocket URL
+    brokerURL: `ws://${import.meta.env.VITE_BASE_URL}/ws`, // 기본 WebSocket URL
     reconnectDelay: 5000, // 연결 실패 시 5초 후 재시도
     onConnect: () => {
       console.log("WebSocket connected with STOMP");
