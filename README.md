@@ -1,30 +1,91 @@
-# React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-Currently, two official plugins are available:
+# 실시간 로그 모니터링 시스템
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+[시연 영상](https://www.youtube.com/watch?v=C-HX4pYyJDQ)
 
-## Expanding the ESLint configuration
+## 개요
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+### 프로젝트 설명
 
-- Configure the top-level `parserOptions` property like this:
+로그 데이터를 실시간으로 모니터링 하며 분석결과를 시각화하여 사용자에게 제공합니다.
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json', './tsconfig.app.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
+### 주요 기술
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+- 프론트엔드: React,Node,React-Query,React-Router, Tailwindcss등
+- 백엔드: kafka,Spring Boot, redis,elasticSearch등
+
+### 인원: 2명(프론트엔드 개발자 1명, 백엔드 개발자 1명)
+
+### 기간: 2024.08.01 ~ 개발중
+
+## 스크린샷
+
+![스크린샷 2024-08-14 오전 3.23.56.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/6230a896-44e2-4d37-8578-4f257f4d8b0b/1add5a81-a5dc-434d-b450-6c6f3dc46523/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2024-08-14_%E1%84%8B%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%AB_3.23.56.png)
+
+![스크린샷 2024-08-14 오전 3.23.49.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/6230a896-44e2-4d37-8578-4f257f4d8b0b/87e0781d-d3ba-42e6-bad6-4eb7deb6037b/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2024-08-14_%E1%84%8B%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%AB_3.23.49.png)
+
+![스크린샷 2024-08-14 오전 3.22.43.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/6230a896-44e2-4d37-8578-4f257f4d8b0b/c5835b97-120d-43a8-b09c-12d2a463a62a/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2024-08-14_%E1%84%8B%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%AB_3.22.43.png)
+
+![스크린샷 2024-08-14 오전 3.22.20.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/6230a896-44e2-4d37-8578-4f257f4d8b0b/83934077-c2d5-4267-bb76-b7a1bbcc2b4a/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2024-08-14_%E1%84%8B%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%AB_3.22.20.png)
+
+![스크린샷 2024-08-14 오전 3.25.20.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/6230a896-44e2-4d37-8578-4f257f4d8b0b/edb1d756-c2fe-4418-9dc5-3dbac8c118ba/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2024-08-14_%E1%84%8B%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%AB_3.25.20.png)
+
+![스크린샷 2024-08-14 오전 3.25.35.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/6230a896-44e2-4d37-8578-4f257f4d8b0b/e333afb5-e89a-4d15-9319-e3a6bc6cca6c/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2024-08-14_%E1%84%8B%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%AB_3.25.35.png)
+
+![스크린샷 2024-08-14 오전 3.25.28.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/6230a896-44e2-4d37-8578-4f257f4d8b0b/14ae0396-42a9-48fd-a8be-dd621c399324/%E1%84%89%E1%85%B3%E1%84%8F%E1%85%B3%E1%84%85%E1%85%B5%E1%86%AB%E1%84%89%E1%85%A3%E1%86%BA_2024-08-14_%E1%84%8B%E1%85%A9%E1%84%8C%E1%85%A5%E1%86%AB_3.25.28.png)
+
+## 설계
+
+### 상태 저장 주체에 따른 3계층 설계
+
+![제목_없는_아트워크.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/6230a896-44e2-4d37-8578-4f257f4d8b0b/c01f400b-80aa-40f3-a7de-dde7135ed492/%E1%84%8C%E1%85%A6%E1%84%86%E1%85%A9%E1%86%A8_%E1%84%8B%E1%85%A5%E1%86%B9%E1%84%82%E1%85%B3%E1%86%AB_%E1%84%8B%E1%85%A1%E1%84%90%E1%85%B3%E1%84%8B%E1%85%AF%E1%84%8F%E1%85%B3.png)
+
+- Server
+    - 매체: redis, elasticSearch, SpringBoot등 외부 매체
+    - 저장기간: 영구적
+    - 사용처: 로그 데이터 수집을 위한 메타데이터, 통계 데이터 설정등
+        - 특징
+            - 비휘발성
+- Browser
+    - 매체: URL, 로컬스토리지
+    - 저장기간: 반영구적
+    - 사용처: 사용자의 통계 검색기록 및 검색 조건
+    - 특징
+        - 약휘발성
+- React
+    - 매체: 메모리
+    - 저장기간: 일시적
+    - 사용처: 사용자의 입력 값
+    - 특징
+        - 강휘발성
+
+### 설계 의도
+
+상태관리 3계층을 나눈 기준은 휘발 되어도 되는 데이터인가?/휘발 되어도 되는 정도에 따라 나누었습니다.
+
+- useState를 사용하여 메모리에 올라가게 되는 상태는 휘발성이 아주 강하기 때문에 사용자가 입력중인 값 즉, 아직 서버에 제출되지 않은 데이터 입니다. 이는 아직 가치있는 데이터가 되기 전입니다.
+- URL과 Localstorage는 각각, 현재 사용자가 찾고자하는 리소스에 대한 정보를 담고 있으며 LocalStorage는 사용자가 검색한 검색조건에 대한 정보를 담고 있습니다. URL은 사용자가 찾고자 하는 정보에 대한 식별자이고 때문에 사용자가 이탈하기 전까지는 데이터를 보존해야 하며 이는 사용자 경험 향상에 이점이 있습니다. 검색조건을 저장하기 적합한 매체입니다. LocalStorage는 사용자가 이전에 검색한 검색조건에 대한 정보입니다. 사용자 경험을 향상시키기 위해 로컬스토리지에 저장하여 빠르게 이전에 검색한 통계 데이터에 접근할 수 있도록 하였습니다.
+- DB에 저장하는 데이터는 매체에 영구적으로 저장되어야 하는 데이터입니다. 이는 주로 사용자의 중요한 기록, 통계 데이터를 집계한 결과, 메타데이터와 같이 장기적으로 보관하고 추후에 다시 접근하거나 분석할 필요가 있는 데이터입니다.
+
+## 기능
+
+- 실시간 모니터링 시스템
+    - WebSocket 및 Stomp를 사용하여 event driven방식으로 실시간으로 데이터를 수신
+- 로그 및 통계 데이터 검색
+    - 사용자가 검색한 검색 조건을 LocalStorage에 캐싱하여 최근 검색 기록을 제공
+- 데이터 시각화
+
+### 문제해결을 위한 고민
+
+- 상태관리
+    - 상태관리 3단계 레이어(서버와 동기화 되어야 하는 상태, 서버와 동기화 되어야 하는 상태이지만 IDLE한 상태, 서버와 동기화 되지 않아도 되는 상태)로 구상하고 설계 하였음
+    - 서버와 동기화 되어야 하는 상태는 API요청이나 WebSocket으로 서버로부터 받은 데이터는 react-query를 사용하여 데이터 캐싱을 활용
+    - 서버와 동기화 되어야 하지만 IDLE한 상태는 모니터링 하고자 하는 데이터의 설정등 사용자가 입력하고 있지만 아직 서버에 제출되지 않은 데이터 useState를 사용하여 관리
+    - 서버와 동기화 되지 않아도 되는 상태는 검색 조건등 서버가 몰라도 되고 클라이언트 독립적인 상태는 URL Parameter를 사용하여 리소스에 대한 정보를 저장하고 데이터가 휘발되지 않도록 관리
+- 예외처리
+    - HTTP 요청에 포함될 값이지만 유효하지 않은 값들은 각각의 데이터 필드를 검사하여 유효한 값만 요청에 포함될 수 있도록 하였음
+    - HTTP 요청중에는 에러를 발생시킬 수 있는 요소들은 Block처리하여 시스템이 동기적으로 동작하도록 설계 하였음
+    - HTTP 응답의 에러코드에 따라 커스텀한 에러를 반환하도록 에러처리
+    - Error Boundary를 사용하여 시스템에 치명적인 에러 발생시 별도의 UI를 사용자에게 보여주도록 하였음
+    - HTTP 응답이 올바르지 않을 경우 HTTP 요청이 실패했다는 메세지 UI를 사용자에게 제공하여 HTTP 응답 성공/실패에 관계 없이 시스템은 Block되지 않도록 하였음
